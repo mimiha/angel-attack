@@ -64,8 +64,9 @@ namespace guiCreator
             maxSpecial = 100,   // max special power available
             curSpecial = 100,   // current special
             defense = 20,       // damage reduced (%) from basic attacks
-            block = 0,          // damage reduced (%) with blocking
+            //block = 0,          // damage reduced (%) with blocking
             range = 300;        // range in pixels of bullets before they disappear
+        int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
 
 
         // Attacking variables for the sprite
@@ -391,9 +392,9 @@ namespace guiCreator
                         elapsedAttackAnimation = 0;
                         Bullet a;
                         if ((velocity.X > 0) || (velocity.X < 0))
-                            a = new Bullet((int)Position.X, (int)(Position.Y + 63), sDirection, attack, range);
+                            a = new Bullet((int)Position.X, (int)(Position.Y + 63), sDirection, attack, range, critChance, critMod, attackMod);
                         else
-                            a = new Bullet((int)Position.X, (int)(Position.Y + 50), sDirection, attack, range);
+                            a = new Bullet((int)Position.X, (int)(Position.Y + 50), sDirection, attack, range, critChance, critMod, attackMod);
                         a.LoadContent(theContentManager);
                         level.AddLast(a);
 
@@ -734,14 +735,35 @@ namespace guiCreator
 
 
         // Calculating a critical hit.
-        public override bool criticalChance(float critChance)
+        public override bool criticalChance(float crittingChance)
         {
             Random chance = new Random();
             int rand = chance.Next(101);
-            if (critChance > rand)
+            if (crittingChance > rand)
                 return true; //scored a crit
             else
                 return false;
+        }
+
+        public override float damageCalculation(float pureAttk)
+        {
+            // the modifier is BEFORE the critical damage is applied
+            Random mod = new Random();
+            float rand = mod.Next(-attackMod, attackMod);
+            rand /= 10; //we divide it to get a float, what we wanted
+            float modDmg = pureAttk * rand;
+            pureAttk += modDmg;
+            if (criticalChance(critChance) == true)
+            { //critical hit! it's super effective!
+                pureAttk *= CRITICAL_DAMAGE;    //add critical damage bonus
+                if (critMod > 0) //if we have crit modifiers, add the damage
+                {
+                    // critMod damage is in %, so 2 = .2% 
+                    float tempMod = pureAttk * critMod / 10;
+                    pureAttk += tempMod;
+                }
+            }
+            return pureAttk;
         }
 
         public override bool takeDamage(float baseDamage)
