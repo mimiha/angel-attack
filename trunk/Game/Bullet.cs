@@ -68,7 +68,7 @@ namespace guiCreator
                 while (n != null)
                 {
                     // Bullet runs into an enemy.
-                    if (n.Value.GetType().ToString() == typeof(AverageJoe).ToString())
+                    if (n.Value.GetType().ToString() == typeof(LesserDemon).ToString())
                     {
                         if (IntersectPixels(sBounds, textureData, n.Value.sBounds, n.Value.textureData))
                         {

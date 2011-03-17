@@ -24,7 +24,7 @@ namespace guiCreator
 
         // Status bar textures
         Texture2D status_hp;
-        Texture2D status_mp;
+        Texture2D status_sp;
         Texture2D status_hpmp_outline;
         Texture2D status_g; //status above health (for grenadier)
         Texture2D wing;
@@ -34,7 +34,13 @@ namespace guiCreator
         Vector2 velocity;
         int sDirection = -1;
         const float ACCELERATION = 0.5f;
-        const float SPEED_MAX = 12.0f;
+        const float DASH_ACCELERATION = 1.0f;
+        const float SPEED_MAX = 14.0f;
+        const float DASH_MAX = SPEED_MAX * 1.5f;
+        const int DASH_TIMEFRAME = 70;     // Time in miliseconds for a player to doubletap to dash
+        int elapsedDash = 500;              // current dash timeframe
+        bool dashing = false;
+        bool counting = false;
         
 
         // Variables used for gravity and jumping (general physics)
@@ -55,11 +61,11 @@ namespace guiCreator
             critMod = 0,        // adds amount of damage that a crit does (%)
             maxHealth = 100,    // max health available
             curHealth = 100,    // current health
-            health = 100,       // current health
+            maxSpecial = 100,   // max special power available
+            curSpecial = 100,   // current special
             defense = 20,       // damage reduced (%) from basic attacks
             block = 0,          // damage reduced (%) with blocking
             range = 300;        // range in pixels of bullets before they disappear
-        const float EXP = 100;  // default EXP needed to level up.
 
 
         // Attacking variables for the sprite
@@ -70,13 +76,6 @@ namespace guiCreator
         const int BASE_RELOAD = 125;    //miliseconds per bullet
         const int BULLETS_MAX = 30;
         const int RELOAD_LENGTH = BULLETS_MAX * BASE_RELOAD;
-
-
-        /*public float getAttk (Grenadier player)
-        {
-            return player.attack;
-        }*/
-
 
         // Animation variables
         string animation;
@@ -144,7 +143,7 @@ namespace guiCreator
             reloadFill = theContentManager.Load<Texture2D>("UI/ReloadFill");
             status_hpmp_outline = theContentManager.Load<Texture2D>("UI/status_hpmp_outline");
             status_hp = theContentManager.Load<Texture2D>("UI/status_hp");
-            status_mp = theContentManager.Load<Texture2D>("UI/status_mp");
+            status_sp = theContentManager.Load<Texture2D>("UI/status_sp");
             status_g = theContentManager.Load<Texture2D>("UI/status_g");
             wing = theContentManager.Load<Texture2D>("UI/wing");
         }
@@ -174,15 +173,53 @@ namespace guiCreator
         {
             KeyboardState aCurrentKeyboardState = Keyboard.GetState();
 
+            // Some dashing stuff
+            if (velocity.X == 0 && dashing == true)
+            {   //if we're not moving, we aren't dashing anymore.
+                dashing = false;
+                counting = false;
+                elapsedDash = DASH_TIMEFRAME;
+            }
+            if (elapsedDash < DASH_TIMEFRAME && counting == true && dashing == false)  //dash is not over the timeframe
+                elapsedDash++;
+
+
+
+            if ((mPreviousKeyboardState.IsKeyDown(Keys.Left) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.Left) == true) ||
+                (mPreviousKeyboardState.IsKeyDown(Keys.Right) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.Right) == true))
+            {   // we have pressed the key and lifted it up.
+                if (elapsedDash >= DASH_TIMEFRAME)
+                { //dash is over the timeframe
+                    elapsedDash = 0;    //start agian 
+                    counting = true;
+                }
+            }
+
             //moving left and right
             if (aCurrentKeyboardState.IsKeyDown(Keys.Left) == true)
             {
-                velocity.X -= ACCELERATION;
+                if (elapsedDash < DASH_TIMEFRAME)
+                {   // successfully comboed two arrow keys
+                    dashing = true;
+                    elapsedDash = DASH_TIMEFRAME;
+                    counting = false;
+                    velocity.X -= DASH_ACCELERATION;
+                } 
+                else //not dashing
+                    velocity.X -= ACCELERATION;
                 sDirection = -1;
             }
             else if (aCurrentKeyboardState.IsKeyDown(Keys.Right) == true)
             {
-                velocity.X += ACCELERATION;
+                if (elapsedDash < DASH_TIMEFRAME)
+                {   // successfully comboed two arrow keys
+                    dashing = true;
+                    elapsedDash = DASH_TIMEFRAME;
+                    counting = false;
+                    velocity.X += DASH_ACCELERATION;
+                }
+                else //not dashing
+                    velocity.X += ACCELERATION;
                 sDirection = 1;
             }
             else
@@ -196,14 +233,31 @@ namespace guiCreator
                     velocity.X += ACCELERATION;
                 }
             }
-            if ((velocity.X > SPEED_MAX))
+            // speed checks
+            if (dashing == true)
             {
-                velocity.X = SPEED_MAX;
+                if ((velocity.X > DASH_MAX))
+                {
+                    velocity.X = DASH_MAX;
+                }
+                if ((velocity.X < -DASH_MAX))
+                {
+                    velocity.X = -DASH_MAX;
+                }
             }
-            if ((velocity.X < -SPEED_MAX))
+            else
             {
-                velocity.X = -SPEED_MAX;
+                if ((velocity.X > SPEED_MAX))
+                {
+                    velocity.X = SPEED_MAX;
+                }
+                if ((velocity.X < -SPEED_MAX))
+                {
+                    velocity.X = -SPEED_MAX;
+                }
             }
+
+
 
             //jumping
             if (aCurrentKeyboardState.IsKeyDown(Keys.Up) == true)
@@ -220,6 +274,8 @@ namespace guiCreator
                 attacking = true;
             }
 
+
+
             //reloading
             if ((mPreviousKeyboardState.IsKeyDown(Keys.LeftAlt) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.LeftAlt) == true))
             {
@@ -230,6 +286,9 @@ namespace guiCreator
                 }
             }
 
+
+
+            // Healing walls
             if ((mPreviousKeyboardState.IsKeyDown(Keys.LeftControl) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.LeftControl) == true))
             {
                 foreach (Sprite n in collidingObjects)
@@ -243,6 +302,8 @@ namespace guiCreator
                     }
                 }
             }
+
+
 
             if ((velocity.X < 0) || (velocity.X > 0))
             {
@@ -270,6 +331,10 @@ namespace guiCreator
             mPreviousKeyboardState = aCurrentKeyboardState;
         }
 
+
+
+
+
         public void updateAnimation(GameTime theGameTime, ContentManager theContentManager)
         {
             if (animation == null)
@@ -294,6 +359,9 @@ namespace guiCreator
             mSpriteTexture = theContentManager.Load<Texture2D>(animation + frameIndex);
         }
 
+
+
+
         public void PlayAnimation(string anim, int fCount, bool loop)
         {
             // If this animation is already running, do not restart it.
@@ -307,6 +375,9 @@ namespace guiCreator
             this.frameIndex = 0;
             this.time = 0.0f;
         }
+
+
+
 
         public LinkedList<Sprite> updateAttack(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
         {
@@ -423,6 +494,15 @@ namespace guiCreator
                             corrections.AddLast(getCorrectionVector(n));
                         }
                     }
+                    /*
+                    // If we run into Lesser Demons, we'll take some damage.
+                    if ((n.GetType().ToString() == typeof(LesserDemon).ToString()))
+                    {
+                        if (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))
+                        {
+                            takeDamage(1); 
+                        }
+                    }*/
                 }
 
                 int horizontalSum = 0;
@@ -531,6 +611,7 @@ namespace guiCreator
         {
             foreach (Sprite n in collidingObjects)
             {
+                //if ((n.GetType().ToString() == typeof(Block).ToString() || n.GetType().ToString() == typeof(LesserDemon).ToString()))
                 if ((n.GetType().ToString() == typeof(Block).ToString()))
                 {
                     if (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))
@@ -663,11 +744,25 @@ namespace guiCreator
                 return false;
         }
 
+        public override bool takeDamage(float baseDamage)
+        {
+            // damageAmount is the damage a player does 
+            // AFTER the modifier is applied.
+            float totalDamage = baseDamage;
+            baseDamage *= defense / 100;
+            totalDamage -= baseDamage;
+            curHealth -= totalDamage;
+            if (curHealth <= 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
 
         public override void Draw(SpriteBatch theSpriteBatch)
         {
-            
             string sBullets = "Ammo: " + numBullets + "/" +BULLETS_MAX;
             hudBullets.DrawText(theSpriteBatch, sBullets);
 
@@ -692,8 +787,7 @@ namespace guiCreator
 
             // wing behind health bar
              Vector2 wing_status = new Vector2(-10, 20);
-            theSpriteBatch.Draw(wing, wing_status,
-                new Rectangle(0, 0, 106, 109),
+            theSpriteBatch.Draw(wing, wing_status, null,
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0); 
 
             // HP/MP Bars behind outline
@@ -704,16 +798,20 @@ namespace guiCreator
                new Rectangle(0, 0, (int)width, (int)height),
                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
+            Vector2 sp_bar = new Vector2(61, 87);
+            width = 127 * (curSpecial / maxSpecial);
+            theSpriteBatch.Draw(status_sp, sp_bar,
+               new Rectangle(0, 0, (int)width, (int)height),
+               Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
+
             // draw the health bars' outlines
-            Vector2 pos = new Vector2(30, 47);
-            theSpriteBatch.Draw(status_hpmp_outline, pos,
-                new Rectangle(0, 0, 169, 70),
+            Vector2 hpsp_outline = new Vector2(30, 47);
+            theSpriteBatch.Draw(status_hpmp_outline, hpsp_outline, null,
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
             // draw the angel's name
             Vector2 angel_status = new Vector2(0, 0);
-            theSpriteBatch.Draw(status_g, angel_status,
-                new Rectangle(0, 0, 200, 86),
+            theSpriteBatch.Draw(status_g, angel_status, null,
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
 
@@ -731,6 +829,7 @@ namespace guiCreator
                 new Rectangle(0, 0, mSpriteTexture.Width, mSpriteTexture.Height),
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.FlipHorizontally, 0);
             }
+
         }
 
     }

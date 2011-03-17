@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace guiCreator
 {
-    public class AverageJoe : Sprite
+    public class LesserDemon : Sprite
     {
         const string ASSETNAME = "AverageJoe/aj_run0";
         Vector2 velocity;
@@ -27,7 +27,8 @@ namespace guiCreator
         //======================================
         const float MAX_HEALTH = 50;
         float health = MAX_HEALTH;              // current health of monster
-        const float BASE_ATTACK_DAMAGE = 5,     // amt of damage monster does
+        const float BASE_ATTACK_DAMAGE = 12,    // Max damage a monster does
+            ATTACK_MOD = 0.7f,                    // Attack modifier (.7%)
             ATTACK_ANIMATION_LENGTH = 300,      // Max amount of miliseconds an attack is in animation
             ATTACK_DELAY = 500,                 // delay before next attack
             CRITCHANCE = 3,                     // chance of crit (%)
@@ -70,7 +71,8 @@ namespace guiCreator
 
         LinkedList<Sprite> collidingObjects = new LinkedList<Sprite>();
 
-        public AverageJoe(int startX, int startY, int direction) : base(startX, startY) 
+        public LesserDemon(int startX, int startY, int direction)
+            : base(startX, startY)
         {
             sDirection = direction;
         }
@@ -488,12 +490,29 @@ namespace guiCreator
 
         public override bool takeDamage(float damageAmount)
         {
+            // damageAmount is the damage a player does 
+            // AFTER the modifier is applied.
+            float defTemp = DEFENSE / 100;
+            damageAmount *= defTemp;
             health -= damageAmount;
             if (health <= 0)
             {
                 return true;
             }
             return false;
+        }
+
+
+
+        // Calculating a critical hit.
+        public override bool criticalChance(float critChance)
+        {
+            Random chance = new Random();
+            int rand = chance.Next(101);
+            if (critChance > rand)
+                return true; //scored a crit
+            else
+                return false;
         }
 
 
@@ -514,6 +533,8 @@ namespace guiCreator
                new Rectangle(0, 0, (int)width, (int)height),
                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
+
+            // drawing the directions
             if (sDirection == (-1))
             {
                 theSpriteBatch.Draw(mSpriteTexture, drawPosition,
@@ -525,7 +546,7 @@ namespace guiCreator
                 theSpriteBatch.Draw(mSpriteTexture, drawPosition,
                 new Rectangle(0, 0, mSpriteTexture.Width, mSpriteTexture.Height),
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.FlipHorizontally, 0);
-            } 
+            }
 
 
             //base.Draw(theSpriteBatch);

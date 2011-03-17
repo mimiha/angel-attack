@@ -323,7 +323,7 @@ namespace guiCreator
                     }
                     if (currentGuiObject == guiObject.AverageJoeLeft)
                     {
-                        AverageJoe c = new AverageJoe((int)pos.X, (int)pos.Y, -1);
+                        LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(3);
@@ -335,7 +335,7 @@ namespace guiCreator
                     }
                     if (currentGuiObject == guiObject.AverageJoeRight)
                     {
-                        AverageJoe c = new AverageJoe((int)pos.X, (int)pos.Y, 1);
+                        LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(3);
@@ -347,7 +347,7 @@ namespace guiCreator
                     }
                     if (currentGuiObject == guiObject.SpawnerLeft)
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.AverageJoe", -1);
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
@@ -355,13 +355,13 @@ namespace guiCreator
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
                         d.AddLast((int)5000);
-                        d.AddLast("guiCreator.AverageJoe");
+                        d.AddLast("guiCreator.LesserDemon");
                         d.AddLast((int)-1);
                         level.args.AddLast(d);
                     }
                     if (currentGuiObject == guiObject.SpawnerRight)
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.AverageJoe", 1);
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
@@ -369,7 +369,7 @@ namespace guiCreator
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
                         d.AddLast((int)5000);
-                        d.AddLast("guiCreator.AverageJoe");
+                        d.AddLast("guiCreator.LesserDemon");
                         d.AddLast((int)1);
                         level.args.AddLast(d);
                     }
