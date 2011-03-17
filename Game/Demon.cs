@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace guiCreator
 {
-    public class AverageJoe : Sprite
+    public class LesserDemon : Sprite
     {
         const string ASSETNAME = "AverageJoe/aj_run0";
         Vector2 velocity;
@@ -27,11 +27,12 @@ namespace guiCreator
         //======================================
         const float MAX_HEALTH = 50;
         float health = MAX_HEALTH;              // current health of monster
-        const float BASE_ATTACK_DAMAGE = 5,     // amt of damage monster does
+        const float BASE_ATTACK_DAMAGE = 12,    // Max damage a monster does
+            ATTACK_MOD = 0.7f,                    // Attack modifier (.7%)
             ATTACK_ANIMATION_LENGTH = 300,      // Max amount of miliseconds an attack is in animation
             ATTACK_DELAY = 500,                 // delay before next attack
             CRITCHANCE = 3,                     // chance of crit (%)
-            DEFENSE = 10;                       // damage reduced (%) from basic attacks
+            DEFENSE = 5;                       // damage reduced (%) from basic attacks
 
 
         // Animation variables
@@ -70,7 +71,7 @@ namespace guiCreator
 
         LinkedList<Sprite> collidingObjects = new LinkedList<Sprite>();
 
-        public AverageJoe(int startX, int startY, int direction) : base(startX, startY) 
+        public LesserDemon(int startX, int startY, int direction) : base(startX, startY) 
         {
             sDirection = direction;
         }
@@ -486,9 +487,14 @@ namespace guiCreator
         //= Overwritten functions from virtual methods in sprite.
         //=======================================================
 
-        public override bool takeDamage(float damageAmount)
+        public override bool takeDamage(float baseDamage)
         {
-            health -= damageAmount;
+            // damageAmount is the damage a player does 
+            // AFTER the modifier is applied.
+            float totalDamage = baseDamage;
+            baseDamage*=DEFENSE/100;
+            totalDamage -= baseDamage;
+            health -= totalDamage;
             if (health <= 0)
             {
                 return true;

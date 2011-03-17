@@ -35,6 +35,9 @@ namespace guiCreator
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
 
+
+
+
         public Sprite(int startX, int startY)
         {
             Position = new Vector2(startX, startY);
@@ -42,6 +45,9 @@ namespace guiCreator
         }
 
         public virtual void LoadContent(ContentManager theContentManager) { }
+
+
+
 
         //Load the texture for the sprite using the Content Pipeline
         public void LoadContent(ContentManager theContentManager, string theAssetName)
@@ -53,6 +59,9 @@ namespace guiCreator
             createBounds();
             Size = new Rectangle(0, 0, (int)(mSpriteTexture.Width * Scale), (int)(mSpriteTexture.Height * Scale));
         }
+
+
+
 
         //When the scale is modified throught he property, the Size of the 
         //sprite is recalculated with the new scale applied.
@@ -66,6 +75,8 @@ namespace guiCreator
                 Size = new Rectangle(0, 0, (int)(mSpriteTexture.Width * Scale), (int)(mSpriteTexture.Height * Scale));
             }
         }
+
+
 
         public virtual LinkedList<Sprite> Update(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
         {
@@ -93,6 +104,8 @@ namespace guiCreator
             return level; 
         }
 
+
+
         //Draw the sprite to the screen
         public virtual void Draw(SpriteBatch theSpriteBatch)
         {
@@ -109,6 +122,9 @@ namespace guiCreator
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
         }
 
+
+
+
         public static bool IntersectBounds(Rectangle rectangleA, Rectangle rectangleB)
         {
             if (rectangleA.Intersects(rectangleB))
@@ -117,6 +133,9 @@ namespace guiCreator
             }
             return false;
         }
+
+
+
         public static bool IntersectPixels(Rectangle rectangleA, Color[] dataA,
                                    Rectangle rectangleB, Color[] dataB)
         {
@@ -148,10 +167,10 @@ namespace guiCreator
 
             // No intersection found
             return false;
-        }
-
-        public virtual bool takeDamage(float damageAmount) { return false; }     
+        }    
             
+
+
         public virtual void createBounds()
         {
             sBounds = new Rectangle((int)Position.X, (int)Position.Y, mSpriteTexture.Width, mSpriteTexture.Height);
@@ -161,5 +180,18 @@ namespace guiCreator
             boundsLeft = new Rectangle((int)(Position.X - 5), (int)Position.Y, 5, mSpriteTexture.Height);
             boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
         }
+
+
+
+        //======================================
+        // Virtual methods common to other objects.
+        // Must be overridden in classes of those who use them.
+        //======================================
+
+        // calculating a critical hit
+        public virtual bool criticalChance(float critChance) { return false; }
+
+        // calculating damage
+        public virtual bool takeDamage(float damageAmount) { return false; } 
     }
 }

@@ -56,7 +56,7 @@ namespace guiCreator
                 LinkedListNode<Sprite> n = level.First;
                 while (n != null)
                 {
-                    if (n.Value.GetType().ToString() == typeof(AverageJoe).ToString())
+                    if (n.Value.GetType().ToString() == typeof(LesserDemon).ToString())
                     {
                         if (IntersectPixels(sBounds, textureData, n.Value.sBounds, n.Value.textureData))
                         {
