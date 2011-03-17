@@ -14,17 +14,21 @@ namespace guiCreator
         float bullet_range;
         bool doneAttacking = false;
 
-        // attack is dependant on grenadier's attack.
-        // it is pushed over from the grenadier in the constructor.
-        float attack;
+        // stats are dependant on grenadier
+        // they are pushed over from the grenadier in the constructor.
+        float attack, critChance, critMod;
+        int attackMod;
 
         // Bullet constructor.
-        public Bullet(int startX, int startY, int direction, float dmg, float range) : base(startX, startY)
+        public Bullet(int startX, int startY, int direction, float dmg, float range, float crit, float critDmg, int mod) : base(startX, startY)
         {
             startingX = startX;
             startingY = startY;
             sDirection = direction;
             attack = dmg;
+            critChance = crit;
+            critMod = critDmg;
+            attackMod = mod;
             bullet_range = range;
         }
 
@@ -74,7 +78,7 @@ namespace guiCreator
                         {
                             doneAttacking = true;
                             level.Remove(this); //delete bullet
-                            if (n.Value.takeDamage( attack ))
+                            if (n.Value.takeDamage(damageCalculation(attack) ))
                             {
                                 //delete enemy
                                 level.Remove(n);
@@ -116,6 +120,27 @@ namespace guiCreator
             }
 
             return level;
+        }
+
+        public override float damageCalculation(float pureAttk)
+        {
+            // the modifier is BEFORE the critical damage is applied
+            Random mod = new Random();
+            float rand = mod.Next(-attackMod, attackMod);
+            rand /= 10; //we divide it to get a float, what we wanted
+            float modDmg = pureAttk * rand;
+            pureAttk += modDmg;
+            if (criticalChance(critChance) == true)
+            { //critical hit! it's super effective!
+                pureAttk *= CRITICAL_DAMAGE;    //add critical damage bonus
+                if (critMod > 0) //if we have crit modifiers, add the damage
+                {
+                    // critMod damage is in %, so 2 = .2% 
+                    float tempMod = pureAttk * critMod / 10;
+                    pureAttk += tempMod;
+                }
+            }
+            return pureAttk;
         }
 
         public override void Draw(SpriteBatch theSpriteBatch)

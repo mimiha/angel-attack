@@ -35,7 +35,7 @@ namespace guiCreator
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
 
-
+        public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
 
         public Sprite(int startX, int startY)
@@ -191,7 +191,10 @@ namespace guiCreator
         // calculating a critical hit
         public virtual bool criticalChance(float critChance) { return false; }
 
-        // calculating damage
+        // calculating base damage with no defense reduction
+        public virtual float damageCalculation(float pureAttk) { return pureAttk; }
+
+        // damage-versus-defense calculation
         public virtual bool takeDamage(float damageAmount) { return false; } 
     }
 }
