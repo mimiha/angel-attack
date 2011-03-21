@@ -1,0 +1,14 @@
+#summary this is how AI for monsters is supposed to work
+
+= Introduction =
+
+each monster has their own ai
+i will describe basic, common to all monsters, then specific
+
+
+= Details =
+the common AI is to home in on walls if there are not any players in a certain radius. stronger monsters probably have a longer radius and to compensate for that, they're faster so they can get to the players faster. If there are both players and walls in their LoS, they will pick which one is closer and chase them for maybe 5 seconds or so, otherwise they'll go punch walls. However, I suspect some monsters may not even be after walls and just snipe players, or vice versa, where monsters may be kind of like battering rams and go for only walls. 
+
+
+==Lesser Demon==
+there is more of a weight on destroying walls rather than killing players.
