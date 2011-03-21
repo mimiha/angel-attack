@@ -38,6 +38,14 @@ namespace guiCreator
         public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
 
+        public enum effectName
+        {
+            DEFAULT,
+            DASH,
+            BACKDASH,
+            CRITICAL,
+        }
+
         public Sprite(int startX, int startY)
         {
             Position = new Vector2(startX, startY);
