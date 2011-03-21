@@ -1,0 +1,19 @@
+#summary shit that needs to get done
+
+= Introduction =
+
+let's get this shit done
+
+
+= list =
+
+==High priority==
+ * adding sound support
+
+==Mid priority==
+ * multiplayer support (good tutorial: http://msdn.microsoft.com/en-us/library/bb203893%28v=XNAGameStudio.31%29.aspx)
+ * 
+
+==Low priority==
+ * double jumping
+ * 
