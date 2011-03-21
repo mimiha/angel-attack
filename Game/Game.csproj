@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Block.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="Effects.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Demon.cs" />
     <Compile Include="Players\Grenadier.cs" />

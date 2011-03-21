@@ -67,6 +67,7 @@ namespace guiCreator
             //block = 0,          // damage reduced (%) with blocking
             range = 300;        // range in pixels of bullets before they disappear
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
+        //int combo = 0;          // combo counter
 
 
         // Attacking variables for the sprite
@@ -132,13 +133,13 @@ namespace guiCreator
         {
             screenPos = new Vector2(screenPosX, screenPosY);
             hudBullets = new Text(10, 120);
+            PlayAnimation("Grenadier/Stand", 16, true);
         }
 
         public override void LoadContent(ContentManager theContentManager)
         {
             velocity = Vector2.Zero;
             base.LoadContent(theContentManager, ASSETNAME);
-            PlayAnimation("Grenadier/Stand", 16, true);
             hudBullets.LoadContent(theContentManager, "Font");
             reloadBackground = theContentManager.Load<Texture2D>("UI/ReloadBackground");
             reloadFill = theContentManager.Load<Texture2D>("UI/ReloadFill");
@@ -157,7 +158,7 @@ namespace guiCreator
             {
                 base.Update(theGameTime, level, theContentManager);
 
-                handleInput(level);
+                handleInput(level, theContentManager);
 
                 updateAnimation(theGameTime, theContentManager);
 
@@ -170,7 +171,7 @@ namespace guiCreator
 
 
 
-        public void handleInput(LinkedList<Sprite> level)
+        public void handleInput(LinkedList<Sprite> level, ContentManager theContentManager)
         {
             KeyboardState aCurrentKeyboardState = Keyboard.GetState();
 
@@ -191,7 +192,7 @@ namespace guiCreator
             {   // we have pressed the key and lifted it up.
                 if (elapsedDash >= DASH_TIMEFRAME)
                 { //dash is over the timeframe
-                    elapsedDash = 0;    //start agian 
+                    elapsedDash = 0;    //start again 
                     counting = true;
                 }
             }
@@ -201,6 +202,15 @@ namespace guiCreator
             {
                 if (elapsedDash < DASH_TIMEFRAME)
                 {   // successfully comboed two arrow keys
+
+                    if (dashing == false)
+                    {
+                        Effect dashCloud;
+                        dashCloud = new Effect((int)(Position.X + 30), (int)Position.Y, effectName.DASH, sDirection);
+                        dashCloud.LoadContent(theContentManager);
+                        level.AddLast(dashCloud);
+                    }
+
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
                     counting = false;
@@ -214,6 +224,15 @@ namespace guiCreator
             {
                 if (elapsedDash < DASH_TIMEFRAME)
                 {   // successfully comboed two arrow keys
+
+                    if (dashing == false)
+                    {
+                        Effect dashCloud;
+                        dashCloud = new Effect((int)(Position.X - 80), (int)Position.Y, effectName.DASH, sDirection);
+                        dashCloud.LoadContent(theContentManager);
+                        level.AddLast(dashCloud);
+                    }
+
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
                     counting = false;

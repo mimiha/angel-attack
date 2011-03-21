@@ -30,6 +30,8 @@ namespace guiCreator
             critMod = critDmg;
             attackMod = mod;
             bullet_range = range;
+
+
         }
 
 
