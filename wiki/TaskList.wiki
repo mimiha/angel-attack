@@ -14,9 +14,15 @@ let's get this shit done
 
 ==Mid priority==
  * multiplayer support (good tutorial: http://msdn.microsoft.com/en-us/library/bb203893%28v=XNAGameStudio.31%29.aspx)
- * adding sound support
+ * adding sound support (http://msdn.microsoft.com/en-us/library/bb203895%28v=XNAGameStudio.31%29.aspx)
  * better collision checking, right now it's a disaster
+ * combo system
 
 ==Low priority==
  * double jumping
  * special attacks implementation
+ * particle effects
+
+
+==other shit==
+ * blending is cool i need to learn this http://msdn.microsoft.com/en-us/library/bb976070%28v=XNAGameStudio.31%29.aspx
