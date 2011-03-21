@@ -16,7 +16,7 @@ let's get this shit done
  * multiplayer support (good tutorial: http://msdn.microsoft.com/en-us/library/bb203893%28v=XNAGameStudio.31%29.aspx)
  * adding sound support (http://msdn.microsoft.com/en-us/library/bb203895%28v=XNAGameStudio.31%29.aspx)
  * better collision checking, right now it's a disaster
- * combo system
+ * combo system - go read other wiki page
 
 ==Low priority==
  * double jumping
