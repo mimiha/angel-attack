@@ -8,12 +8,15 @@ let's get this shit done
 = list =
 
 ==High priority==
- * adding sound support
+ * monster AI (currently only Demon.cs)
+ * more players, next one is Lancer
+ * *LINKED LIST MANAGING - WE HAVE TO ORGANIZE THE FUCKING THING*
 
 ==Mid priority==
  * multiplayer support (good tutorial: http://msdn.microsoft.com/en-us/library/bb203893%28v=XNAGameStudio.31%29.aspx)
- * 
+ * adding sound support
+ * better collision checking, right now it's a disaster
 
 ==Low priority==
  * double jumping
- * 
+ * special attacks implementation
