@@ -1,0 +1,46 @@
+
+= Details =
+
+*Architect* – Excited, hyperactive, cheerful and outgoing. A huge tomboy, and while she’s intelligent she acts childish. 
+
+Average DEF – Abysmal ATTK – High SPEED. Support character.
+  * The architect can build walls, and also repair them faster than other characters.
+  * She can place turrets as a defensive measure.
+  * She can revive incapacitated party members with electrocution.
+
+----
+*Noble* – Serious, no-nonsense, scholarly and knowledgeable. Is always facepalming at the blunders of his comrades. 
+
+Abysmal DEF – Fantastic ATTK – Average SPEED. Glass cannon character.
+  * The noble can slow and stop time, as well as speed himself up.
+  * He is ranged.
+  * He can reflect projectiles and magic.
+
+----
+*Grenadier* – Shy, silent, focused and aloof. Says nothing and no one ever knows what she’s thinking. 
+
+High DEF – Average ATTK – Pathetic SPEED. Back-line rounded ranged character.
+  * The grenadier has a multitude of bombs she can throw to damage or afflict enemies.
+   * The powerful Flash Bang, which stuns all enemies in a very large area
+   * Freeze Bang, which freezes enemies until someone attacks them
+   * Flame Pit, which sets enemies on fire (DoT)
+  * She is ranged.
+
+----
+*Espion* – Trickster, liar, smooth and outspoken. Thinks he’s the main character and professes his love constantly to Grenadier. 
+
+Pathetic DEF – High ATTK – Fantastic SPEED. Slippery cannon character.
+  * The espion can stealth through enemies and prepare several strike attacks, all of which must have the enemy with its back to him.
+   * Paralyzing Strike to paralyze enemies for a short time
+   * Jagged Strike to make enemies bleed (DoT)
+   * Backstab for just instant damage
+  * He does more damage when an enemy has its back turned to him.
+  * He can coat his weapons in poison. (DoT)
+
+----
+*Lancer* – Honourable, knight-like, brave yet gentle. He’s delusional and thinks he has to save a princess. 
+
+Fantastic DEF – Pathetic ATTK – Abysmal SPEED. Front-line defensive character.
+   * The lancer is capable of guarding attacks from enemies.
+   * He can create temporary walls to stop enemies.
+   * He can become nearly-invincible when in dire need.
