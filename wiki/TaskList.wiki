@@ -9,7 +9,7 @@ let's get this shit done
 
 ==High priority==
  * monster AI (currently only Demon.cs)
- * more players, next one is Lancer
+ * more players, next one is ESPION. See characters page for specifics
  * *LINKED LIST MANAGING - WE HAVE TO ORGANIZE THE FUCKING THING*
 
 ==Mid priority==
