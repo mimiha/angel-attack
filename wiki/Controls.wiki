@@ -1,0 +1,20 @@
+#summary General controls, and for each character
+
+= General (GAME) =
+
+*<- and ->* Arrow keys to move.
+
+*<-<- and ->->* (double tap) Arrow keys to dash.
+
+*UP* arrow key to jump.
+
+*SPACEBAR* to attack.
+
+*LEFT ALT*
+ * *Architect:*
+ * *Noble:*
+ * *Grenadier:* Reload bullets
+ * *Espion:* Leave/Enter stealth
+ * *Lancer:*
+
+*LEFT CTRL* to repair walls.
