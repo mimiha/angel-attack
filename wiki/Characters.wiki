@@ -45,7 +45,7 @@ She is ranged, thus has bullets. She can only shoot one at a time (but spammable
 Pathetic DEF – High ATTK – Fantastic SPEED. Slippery cannon character.
   * The espion can stealth through enemies and prepare several strike attacks, all of which must have the enemy with its back to him.
    * Paralyzing Strike to paralyze enemies for a short time
-   * Jagged Strike to make enemies bleed (DoT)
+   * Gouging Blade to make enemies bleed (DoT)
    * Backstab for just instant damage
   * He does more damage when an enemy has its back turned to him.
   * He can coat his weapons in poison. (DoT)
