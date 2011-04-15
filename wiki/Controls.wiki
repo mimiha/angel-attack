@@ -18,3 +18,26 @@
  * *Lancer:*
 
 *LEFT CTRL* to repair walls.
+
+
+*Z*
+ * *Architect:*
+ * *Noble:*
+ * *Grenadier:* Grenade: Freeze Quake 
+ * *Espion:* Stealth Arts: Paralyzing Strike (stealthed only)
+ * *Lancer:*
+
+
+*X*
+ * *Architect:*
+ * *Noble:*
+ * *Grenadier:* Grenade: Fame Pit
+ * *Espion:* Stealth Arts: Jagged Strike (stealthed only)
+ * *Lancer:*
+
+*C*
+ * *Architect:*
+ * *Noble:*
+ * *Grenadier:* Grenade: Rust Bomb
+ * *Espion:* Stealth Arts: Backstab (stealthed only)
+ * *Lancer:*
