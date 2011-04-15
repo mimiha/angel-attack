@@ -31,8 +31,8 @@
 *X*
  * *Architect:*
  * *Noble:*
- * *Grenadier:* Grenade: Fame Pit
- * *Espion:* Stealth Arts: Jagged Strike (stealthed only)
+ * *Grenadier:* Grenade: Flame Pit
+ * *Espion:* Stealth Arts: Gouging Blade (stealthed only)
  * *Lancer:*
 
 *C*
