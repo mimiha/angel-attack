@@ -35,4 +35,5 @@ let's get this shit done
  * dashing is still pretty buggy but i need to test for specific kinks
  * Need to implement REGULAR MELEE ATTACKING and not projectiles like grenadier. this is another hump in espion's coding.
   * Temporary solution maybe?: Have the effect of the swing (the swoosh) have a bounding box
+ * WE NEED A START SCREEN, LOLZ.
  * BLARG
