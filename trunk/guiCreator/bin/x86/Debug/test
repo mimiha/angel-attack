@@ -1,0 +1,25 @@
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 320
+guiCreator.Wall
+Argument Length = 2
+System.Int32 560 320
+guiCreator.Protectee
+Argument Length = 2
+System.Int32 600 200
+guiCreator.Grenadier
+Argument Length = 4
+System.Int32 480 200 512 384
+guiCreator.LesserDemon
+Argument Length = 3
+System.Int32 360 200 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 240 280 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 320 320 5000
+System.String guiCreator.LesserDemon
+System.Int32 1
