@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Storage;
 
 /*------------------------------EMMANUEL'S EDITS--------------------------------
  * 01. Changed "LoadContent()" to work with new file format
+ * 02. Cleaning up comments & adding some to "LoadContent()"
 */
 namespace guiCreator
 {
@@ -78,37 +79,7 @@ namespace guiCreator
                 string fileName = commandArgs[1];
                 if (File.Exists(fileName))
                 {
-                    /*currentLevel = new LinkedList<Sprite>();
-                    FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                    StreamReader sr = new StreamReader(fs);
-                    string type;
-                    int numArgs;
-                    Type argType;
-                    object[] args;
-                    LinkedList<object> llArgs;
-                    string data = sr.ReadLine();
-                    while (data != null)
-                    {
-                        type = data;
-                        data = sr.ReadLine();
-                        numArgs = Convert.ToInt32(data);
-                        args = new object[numArgs];
-                        llArgs = new LinkedList<object>();
-                        data = sr.ReadLine();
-                        for (int i = 0; i < numArgs; i++)
-                        {
-                            argType = Type.GetType(data);
-                            data = sr.ReadLine();
-                            args[i] = data;
-                            args[i] = Convert.ChangeType(args[i], argType);
-                            llArgs.AddLast(args[i]);
-                            data = sr.ReadLine();
-                        }
-                        Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(type), args);
-                        a.LoadContent(this.Content);
-                        currentLevel.AddLast(a);
-                    }*/
-                    /*----------FUNC KEY---------
+                /*----------FUNC KEY---------
                  * STM = Stream
                  * ARG = Argument
                  * ARY = Array
@@ -116,8 +87,8 @@ namespace guiCreator
                  * LL  = LinkedList<>
                  * SPR = Sprite
                  * REP = Representate/Representation
-                 * DSPROBJ = Derived Sprite Object
-                             */
+                 * DRSPROBJ = Derived Sprite Object
+                 */
 
                     // STMs for File & Reading. FileSTM opens the "fileName" file located here
                     // "angelattack\guiCreator\bin\x86\Debug" And ReadSTM reads from that file.
@@ -125,6 +96,7 @@ namespace guiCreator
                     StreamReader SR = new StreamReader(FS);
 
                     string SpriteTypeData = SR.ReadLine();      // Gets the SPROBJ for the ARGs
+                    
                     // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
                     // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
                     string[] FileLine = SR.ReadLine().Split(new char[] { ' ' });
@@ -180,7 +152,7 @@ namespace guiCreator
                                     ++Iterator1;    // So next value is stored in a different element
                                 }
                         }
-
+                        // The Sprite object now exists! ARGs assigned to a DRSPROBJ & drawn to screen.
                         Sprite SpriteInstance = (Sprite)Activator.CreateInstance
                                                 (Type.GetType(SpriteTypeData), ArgumentValues);
                         SpriteInstance.LoadContent(this.Content);
@@ -198,6 +170,7 @@ namespace guiCreator
                         // Stores 1 piece of the level. 
                         currentLevel.AddLast(SpriteInstance);
                     }
+                    // Closing up the streams when file is done being read from. 
                     SR.Close();
                     FS.Close();
                 }
