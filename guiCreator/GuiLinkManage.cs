@@ -56,11 +56,12 @@ namespace guiCreator
     using LL_CorrectVect = LinkedList<LesserDemon.CorrectionVector2>;
     using LL_Obj = LinkedList<object>; 
     using LL_Int = LinkedList<int>; 
-    using GG_LevelData = GuiGame.LevelData; 
+    using GG_LevelData = GuiGame.LevelData;
+    delegate void DoSomething(); 
 
     public class GuiLinkManage
     {
-
+            
         /* No Wall LinkedList actions
            No Text LinkedList actions
            Yes Sprite LinkedList actions in; Update. Nothing done to linkedlist itself though
@@ -79,9 +80,8 @@ namespace guiCreator
            Removes Node from a LinkedList object
          */
 
-
         /*GUILINKMANAGE FIELDS--------------------------------------------------------------1*
-        //-------------------------LINKEDLIST STORAGE---------------------------------------2*
+        //-------------------------LINKEDLIST STORAGE---------------------------------------A2*
         // The following Lists used in Game1, Spawner, Demon and Block.cs
         LinkedList<Sprite> SpriteStorage;                    // Copy of a Sprite List
         LinkedList<LinkedList<object>> ListObjectStorage;    // Copy of a LinkedList 
@@ -91,19 +91,19 @@ namespace guiCreator
                                                              // List
         GuiGame.LevelData LevelStorage;                      // Copy of LevelData
         LinkedList<object> ObjectStorage;                    // Copy of Object List
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------A2*
 
 
-        /*----------------------------LINKEDLIST COPIES-------------------------------------2*
+        /*----------------------------LINKEDLIST COPIES-------------------------------------A2*
         Sprite[] SpriteCopy;                    // Sprite value from a LinkedList 
         LinkedList<object>[] ListObjectCopy;    // LinkedList object values from a 
                                                 // LinkedList LinkedList object 
         object[] ObjectCopy;                    // Object values from a LinkedList
         int[] IntCopy;                          // Integer values from a LinkedList
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------A2*
 
 
-        /*-------------------------------NODE LOCATIONS-------------------------------------2*
+        /*-------------------------------NODE LOCATIONS-------------------------------------A2*
         // To use for searching for Node types to delete
         int[] SpritePositions;          // Sprite(Wall, Block, or other derived classes)
         int[] ListObjectPositions;      // LL<LL<object>>(Usually Int of X,Y positions)
@@ -111,12 +111,12 @@ namespace guiCreator
         int[] CorrectionPositions;      // Collision detection?
         int[] LevelPositions;           // For Multiple Levels?
         int[] ObjectPositions;          // Has ListObjectPositions Node(mostly int) type position
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------A2*
         //FIELD END-------------------------------------------------------------------------1*/
 
 
         /*GUILINKMANAGE FIELD MANIPULATIONS-------------------------------------------------1*
-        /*----------------------------------CONSTRUCTOR-------------------------------------2*
+        /*----------------------------------CONSTRUCTOR-------------------------------------B2*
         // Constructor #1 No Value if used must use accessors to modify class fields
         GuiLinkManage()
         {
@@ -463,10 +463,10 @@ namespace guiCreator
             ListObjectCopy = new LinkedList<object>[AnObjectListList.Count];
             ObjectCopy = new object[AnObjectList.Count];
         }
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------B2*
 
 
-        /*-----------------------------------ACCESSORS--------------------------------------2*
+        /*-----------------------------------ACCESSORS--------------------------------------B2*
         //STORAGE ACCESSORS=================================================================
         // LL<Sprite> can be; Bullet, LesserDemon, Protectee, Spawner or Text value
         public LinkedList<Sprite> SPRITESTORAGE 
@@ -524,15 +524,15 @@ namespace guiCreator
             get { return LevelStorage.data; }
             set { LevelStorage.data = value; }
         }
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------B2*
         //GUILINKMANAGER FIELD MANIP END----------------------------------------------------1*/
 
 
-        /*----------------------------------PLAIN OLD DATA----------------------------------1*
+        /*----------------------------------PLAIN OLD DATA----------------------------------1*/
         // A Single Piece in the Level 
         public struct LevelPiece
         {
-            public LinkedListNode<LinkedList<object>> ObjectPiece;
+            public LinkedListNode<object[]> ObjectPiece;
             public LinkedListNode<int> IntPiece;
             public LinkedListNode<Sprite> SpritePiece;
         }
@@ -540,7 +540,7 @@ namespace guiCreator
         
 
         /*NODE MANIPULATION FUNCTIONS-------------------------------------------------------1*
-        /*-----------------------------------NODE REMOVERS----------------------------------2*
+        /*-----------------------------------NODE REMOVERS----------------------------------C2*/
         // Removes Node from LinkedList LinkedList object
         public LinkedList<LinkedList<object>> RemoveElement
             (LinkedList<LinkedList<object>> LinkListObject,
@@ -575,10 +575,10 @@ namespace guiCreator
 
             return LevelPlan;
         }
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------C2*/
 
 
-        /*------------------------------NODE STEPPERS---------------------------------------2*
+        /*------------------------------NODE STEPPERS---------------------------------------C2*/
         // Next Node in object LinkedList
         public LinkedListNode<object> NextElement(LinkedListNode<object> NextObject)
         {
@@ -617,10 +617,10 @@ namespace guiCreator
 
             return GrenadierFlag;
         }
-        //----------------------------------END---------------------------------------------2*
+        //----------------------------------END---------------------------------------------C2*/
 
 
-        /*------------------------------FIRST NODE INITIALIZERS-----------------------------2*
+        /*------------------------------FIRST NODE INITIALIZERS-----------------------------C2*/
         // All of the below Initialize a LinkedListNode of type 'x' to First Node in Linked-
         // List of type 'x' Brief comments on what type 'x' is will be provided
         // X is LinkedList<object> for Node & List
@@ -652,7 +652,46 @@ namespace guiCreator
 
             return LevelPieceStorage;
         }
-        //----------------------------------END---------------------------------------------2*
+
+        // Grabs the Level's Maximum width
+        public void LevelWidth(GG_LevelData LevelCopy)
+        {
+            // Store Minimum & Maximum of Level's width
+        }
+
+        // Makes Spawner the first in List & returns how many Spawners are in Level
+        public int SortSpawner(GG_LevelData LevelCopy)
+        {
+            int LinkIndex = 0;      // The index of the current LinkedListNode
+
+            // Going through all Sprite objects
+            foreach (Sprite SpriteObject in LevelCopy.data)
+            {
+
+                // When a spawner is detected remove it & copy to CopySpawner
+                if (SpriteObject.GetType() == typeof(guiCreator.Spawner))
+                {
+                    // LinkIndex knows where the "Spawner" is at. Add this value & its' ARGs
+                    // to LinkList beginning, using ElementAt() which fetches a value from
+                    // LinkedList located at the specified index. 
+                    LevelCopy.data.AddFirst(SpriteObject);
+                    LevelCopy.args.AddFirst(LevelCopy.args.ElementAt(LinkIndex));
+                    LevelCopy.numArgs.AddFirst(LevelCopy.numArgs.ElementAt(LinkIndex)); 
+
+                    // LinkIndex knows where the "Spawner" is at. Using ElementAt() to re-
+                    // move that specified element. All LinkedLists in a "LevelData" have
+                    // Same length & order so I can use the same LinkIndex across fields
+                    LevelCopy.args.Remove(LevelCopy.args.ElementAt(LinkIndex));
+                    LevelCopy.data.Remove(LevelCopy.data.ElementAt(LinkIndex));
+                    LevelCopy.numArgs.Remove(LevelCopy.numArgs.ElementAt(LinkIndex));  
+
+                }
+
+                ++LinkIndex;
+            }
+            return 0; 
+        }
+        //----------------------------------END---------------------------------------------C2*/
         //NODE MANIPULATION END-------------------------------------------------------------1*/
     }
 }

@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
  * 03. Beautified KeyState.IsKeyDown(Keys.F12) in "UpdateGui()"
  * 04. "GuiLinkManage.cs" check it out
  * 05. Optimized save & load functions for level
+ * 06. Optimized "UpdateGui()" now you can click & drag to create levels. Try it out!
  */
 /*-----------------------------EMMANUEL'S NOTES---------------------------------
  * POD = Plain Old Data
@@ -302,7 +303,7 @@ namespace guiCreator
                     mSprite.LoadContent(this.Content, "Protectee");
                     currentGuiObject = guiObject.Protectee;
                 }
-                if ((mouseState.LeftButton == ButtonState.Released) && (state.LeftButton == ButtonState.Pressed))
+                if ((state.LeftButton == ButtonState.Pressed))
                 {
                     if (currentGuiObject == guiObject.Delete)
                     {
@@ -518,29 +519,6 @@ namespace guiCreator
         {
             if ((fileName != null)&&(!fileName.Equals("")))
             {
-                /*FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-                StreamWriter sw = new StreamWriter(fs);
-                LinkedListNode<Sprite> n = level.data.First;
-                LinkedListNode<int> m = level.numArgs.First;
-                LinkedListNode<LinkedList<object>> o = level.args.First;
-                while (n != null)
-                {
-                    sw.WriteLine(n.Value.GetType().ToString());
-                    sw.WriteLine(m.Value);
-                    LinkedListNode<object> p = o.Value.First;
-                    while (p != null)
-                    {
-                        sw.WriteLine(p.Value.GetType().ToString());
-                        sw.WriteLine(p.Value);
-
-                        p = p.Next;
-                    }
-                    n = n.Next;
-                    m = m.Next;
-                    o = o.Next;
-                }
-                sw.Close();
-                fs.Close();*/
                 /* ---------------------FUNCTION COMMENT KEY---------------------
                  * LL  = LinkedList
                  * NOD = Node/Link
