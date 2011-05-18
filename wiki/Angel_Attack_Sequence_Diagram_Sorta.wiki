@@ -1,6 +1,6 @@
-#summary One-sentence summary of this page.
+#This is mainly for me to document the function calling flow of the different objects we've created in Angel Attacks. If it's useful good, else just ignore it.#
 
-= Introduction =
+=  =
 
 Add your content here.
 
