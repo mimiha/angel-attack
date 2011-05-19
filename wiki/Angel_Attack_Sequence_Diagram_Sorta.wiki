@@ -1,11 +1,24 @@
-#This is mainly for me to document the function calling flow of the different objects we've created in Angel Attacks. If it's useful good, else just ignore it.#
+This is mainly for me to document the function calling flow of the different objects we've created in Angel Attacks. If it's useful good, else just ignore it.
 
-=  =
+= Things to keep in mind =
+  * Most classes that are moving "Sprite" derived objects use the "Update()". 
+  * XNA calls it's own "Game.Update()" our "Game1.Update()" in a continuous loop.
+  * Functions listed will be ones created in Angel Attack only. 
 
-Add your content here.
+= Classes using Update() =
+ * = Sprite =
+   * **
 
+ * = Bullet = 
+ * = Grenadier = 
+ * = LesserDemon = 
+ * = Spawner = 
 
-= Details =
+= Classes not using Update() =
+ * = Text =
+ * = Wall = 
+ * = Protectee =
+ * = Block =
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
