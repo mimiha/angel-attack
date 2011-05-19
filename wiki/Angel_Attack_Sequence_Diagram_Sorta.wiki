@@ -7,10 +7,23 @@ This is mainly for me to document the function calling flow of the different obj
 
 = Classes using Update() =
  * = Sprite =
-   * **
+|| *Updates Functions* || *Uses this(1)* || 
+|| *createBounds()* || Nothing ||
 
  * = Bullet = 
+|| *Updates Functions* || *Uses this(1)* || *Uses this(2)* || *Uses this(3)* || *Uses this(4)* ||
+|| *Sprite.createBounds()* || Nothing || Nothing || Nothing || Nothing ||
+|| *updateMove()* || Nothing || Nothing || Nothing || Nothing ||
+|| *handleCollisions()* || ?Sprite.takeDamage()|| ?LesserDemon.takeDamage() || ?Protectee.takeDamge()|| Sprite.IntersectPixels() ||
+|| *Sprite.Update()* || createBounds() || Nothing || Nothing || Nothing ||
+
  * = Grenadier = 
+|| *Updates Functions* || *Uses this(1)* || *Uses this(2)* ||
+|| *Sprite.Update()* || createBounds() ||
+|| *handleInput()* || Sprite.IntersectPixels() || PlayAnimation() ||
+|| *UpdateAnimation()* || Nothing || Nothing ||
+|| *updateAttack()* || Nothing || Nothing ||
+|| *applyPhysics()* || getCollisions() || handleCollisions() ||
  * = LesserDemon = 
  * = Spawner = 
 
