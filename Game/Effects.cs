@@ -29,6 +29,8 @@ namespace guiCreator
 
             if (name == effectName.DASH)
                 PlayAnimation("effects/dash/forward", 9, false);
+            if (name == effectName.E_SLICE)
+                PlayAnimation("effects/melee/slice", 5, false);
         }
 
         public override void LoadContent(ContentManager theContentManager)

@@ -31,12 +31,22 @@ namespace guiCreator
         public Rectangle boundsBottom;
         public Rectangle boundsLeft;
         public Rectangle boundsRight;
+        public Rectangle backBounds;
+        public Rectangle frontBounds;
 
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
 
+        public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
 
+        public enum effectName
+        {
+            DEFAULT,
+            DASH,
+            BACKDASH,
+            CRITICAL,
+        }
 
         public Sprite(int startX, int startY)
         {
@@ -101,7 +111,7 @@ namespace guiCreator
             {
                 drawPosition = Position;
             }
-            return level; 
+            return level;
         }
 
 
@@ -167,8 +177,8 @@ namespace guiCreator
 
             // No intersection found
             return false;
-        }    
-            
+        }
+
 
 
         public virtual void createBounds()
@@ -181,7 +191,27 @@ namespace guiCreator
             boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
         }
 
+        //Parameter: getDirection()
+        public virtual void createBackBounds(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
 
+            if (dir == true)    //facing left
+                backBounds = new Rectangle(half, (int)Position.Y, half, mSpriteTexture.Height);
+            else
+                backBounds = new Rectangle((int)(Position.X), (int)Position.Y, half, mSpriteTexture.Height);
+        }
+
+        //Parameter: getDirection()
+        public virtual void createFrontBounds(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
+
+            if (dir == true)    //facing left
+                frontBounds = new Rectangle((int)(Position.X), (int)Position.Y, half, mSpriteTexture.Height);
+            else
+                frontBounds = new Rectangle(half, (int)Position.Y, half, mSpriteTexture.Height);
+        }
 
         //======================================
         // Virtual methods common to other objects.
@@ -191,7 +221,15 @@ namespace guiCreator
         // calculating a critical hit
         public virtual bool criticalChance(float critChance) { return false; }
 
-        // calculating damage
-        public virtual bool takeDamage(float damageAmount) { return false; } 
+        // calculating base damage with no defense reduction
+        public virtual float damageCalculation(float pureAttk) { return pureAttk; }
+
+        // damage-versus-defense calculation
+        public virtual bool takeDamage(float damageAmount) { return false; }
+
+        // getting the direction of the sprite;
+        // true = left, false = right
+        public virtual bool getDirection() { return false; }
+
     }
 }

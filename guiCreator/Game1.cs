@@ -68,7 +68,8 @@ namespace guiCreator
             Delete,
             Block,
             Wall,
-            Player,
+            Grenadier,
+            Espion,
             AverageJoeLeft,
             AverageJoeRight,
             SpawnerLeft,
@@ -237,9 +238,10 @@ namespace guiCreator
                     "E = Protectee\n\n" +
                     "Enemies / Players\n" +
                     "====================\n" +
-                    "A = Grenadier\n" + 
-                    "S = Average Joe (moving left)\n" +
-                    "D = Average Joe (moving right)\n\n" +
+                    "A = Grenadier\n" +
+                    "S = Espion\n" + 
+                    "D = Average Joe (moving left)\n" +
+                    "F = Average Joe (moving right)\n\n" +
                     "Spawners\n" + 
                     "====================\n" +
                     "Z = Average Joe Spawner (moving left)\n" +
@@ -280,14 +282,19 @@ namespace guiCreator
                 if (keyState.IsKeyDown(Keys.A) == true)
                 {
                     mSprite.LoadContent(this.Content, "Grenadier/Stand0");
-                    currentGuiObject = guiObject.Player;
+                    currentGuiObject = guiObject.Grenadier;
                 }
                 if (keyState.IsKeyDown(Keys.S) == true)
+                {
+                    mSprite.LoadContent(this.Content, "Espion/Stand0");
+                    currentGuiObject = guiObject.Espion;
+                }
+                if (keyState.IsKeyDown(Keys.D) == true)
                 {
                     mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
                     currentGuiObject = guiObject.AverageJoeLeft;
                 }
-                if (keyState.IsKeyDown(Keys.D) == true)
+                if (keyState.IsKeyDown(Keys.F) == true)
                 {
                     mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
                     currentGuiObject = guiObject.AverageJoeRight;
@@ -359,7 +366,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.Player && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Grenadier)
                     {
                         Grenadier c = new Grenadier((int)pos.X, (int)pos.Y, 512, 384);
                         c.LoadContent(this.Content);
@@ -375,7 +382,23 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeLeft && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Espion)
+                    {
+                        Espion c = new Espion((int)pos.X, (int)pos.Y, 512, 384);
+                        c.LoadContent(this.Content);
+                        level.data.AddLast(c);
+                        level.numArgs.AddLast(4);
+                        //LinkedList<object> d = new LinkedList<object>();
+                        //object[] d = new LinkedList<object>();
+                        /**
+                        d.AddLast((int)pos.X);
+                        d.AddLast((int)pos.Y);
+                        d.AddLast(512);
+                        d.AddLast(384);/**/
+                        object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
+                        level.args.AddLast(d);
+                    }
+                    if (currentGuiObject == guiObject.AverageJoeLeft)
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
                         c.LoadContent(this.Content);

@@ -92,6 +92,7 @@
     <Compile Include="Bullet.cs" />
     <Compile Include="Demon.cs" />
     <Compile Include="GuiLinkManage.cs" />
+    <Compile Include="Players\Espion.cs" />
     <Compile Include="Players\Grenadier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

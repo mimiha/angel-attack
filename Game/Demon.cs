@@ -516,6 +516,14 @@ namespace guiCreator
         }
 
 
+        // Getting direction.
+        // true = left; false = right
+        public override bool getDirection()
+        {
+            if (sDirection == (-1))
+                return true;
+            else return false;
+        }
 
         public override void Draw(SpriteBatch theSpriteBatch)
         {
