@@ -36,8 +36,6 @@ namespace guiCreator
                  elapsed++;
                  
                  // Keeps on Spawning till no more need to be spawned. 
-                 if (DemonCount > 0 && !(DoneSpawning))
-                 {
                      if (elapsed >= spawnDelay)
                      {
                          elapsed = 0;
@@ -46,9 +44,6 @@ namespace guiCreator
                          level.AddLast(a);
                      }
                      --DemonCount;
-                 }
-                 else
-                     DoneSpawning = true;   // We're done spawning now!
 
                  base.Update(theGameTime, level, theContentManager);
             }

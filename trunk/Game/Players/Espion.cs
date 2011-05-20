@@ -21,6 +21,7 @@ namespace guiCreator
         Texture2D status_hpmp_outline;
         Texture2D status_e; //status above health
         Texture2D wing;
+        //Texture2D _DEBUG;   //DEBUG BOUNDING BOXES
 
 
         // General variables for movement of the sprite
@@ -59,6 +60,8 @@ namespace guiCreator
             defense = 9;       // damage reduced (%) from basic attacks
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
         //int combo = 0;          // combo counter
+
+        public Rectangle attackBounds;
 
 
         // Attacking variables for the sprite
@@ -136,6 +139,7 @@ namespace guiCreator
             status_sp = theContentManager.Load<Texture2D>("UI/status_sp");
             status_e = theContentManager.Load<Texture2D>("UI/status_e");
             wing = theContentManager.Load<Texture2D>("UI/wing");
+            //_DEBUG = theContentManager.Load<Texture2D>("black");
         }
 
         public override LinkedList<Sprite> Update(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
@@ -178,15 +182,18 @@ namespace guiCreator
             if ((mPreviousKeyboardState.IsKeyDown(Keys.Left) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.Left) == true) ||
                 (mPreviousKeyboardState.IsKeyDown(Keys.Right) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.Right) == true))
             {   // we have pressed the key and lifted it up.
-                if (elapsedDash >= DASH_TIMEFRAME)
-                { //dash is over the timeframe
-                    elapsedDash = 0;    //start again 
-                    counting = true;
+                if (canAct == true && cloaked==false)
+                {
+                    if (elapsedDash >= DASH_TIMEFRAME)
+                    { //dash is over the timeframe
+                        elapsedDash = 0;    //start again 
+                        counting = true;
+                    }
                 }
             }
 
             //moving left and right
-            if (aCurrentKeyboardState.IsKeyDown(Keys.Left) == true)
+            if (aCurrentKeyboardState.IsKeyDown(Keys.Left) == true && canAct == true)
             {
                 if (elapsedDash < DASH_TIMEFRAME)
                 {   // successfully comboed two arrow keys
@@ -208,7 +215,7 @@ namespace guiCreator
                     velocity.X -= ACCELERATION;
                 sDirection = -1;
             }
-            else if (aCurrentKeyboardState.IsKeyDown(Keys.Right) == true)
+            else if (aCurrentKeyboardState.IsKeyDown(Keys.Right) == true && canAct == true)
             {
                 if (elapsedDash < DASH_TIMEFRAME)
                 {   // successfully comboed two arrow keys
@@ -285,7 +292,7 @@ namespace guiCreator
             if ((mPreviousKeyboardState.IsKeyDown(Keys.Z) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.Z) == true))
             {
                 // Stealth Arts: Paralyzing Strike
-                if (cloaked == true)
+                if (cloaked == true && facing_back==true)
                 {
                     attacking = true;
                     special_1 = true;
@@ -295,7 +302,7 @@ namespace guiCreator
             if ((mPreviousKeyboardState.IsKeyDown(Keys.X) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.X) == true))
             {
                 // Stealth Arts: Gouging Blade
-                if (cloaked == true)
+                if (cloaked == true && facing_back == true)
                 {
                     attacking = true;
                     special_2 = true;
@@ -305,7 +312,7 @@ namespace guiCreator
             if ((mPreviousKeyboardState.IsKeyDown(Keys.C) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.C) == true))
             {
                 // Stealth Arts: Backstab
-                if (cloaked == true)
+                if (cloaked == true && facing_back == true)
                 {
                     attacking = true;
                     special_3 = true;
@@ -316,13 +323,15 @@ namespace guiCreator
             //=============================
             //= CLOAKING - LEFT ALT KEY ===
             //=============================
-            if ((mPreviousKeyboardState.IsKeyDown(Keys.LeftAlt) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.LeftAlt) == true))
+            if ((mPreviousKeyboardState.IsKeyDown(Keys.LeftAlt) == true) && (aCurrentKeyboardState.IsKeyUp(Keys.LeftAlt) == true) && canAct == true)
             {
                 if (cloaked == true)
                 {   // Uncloak, but make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
-                        PlayAnimation("Espion/uncloak", 15, false);
+                        //PlayAnimation("Espion/uncloak", 15, false);
+                        PlayAnimation("Espion/stand", 16, true);
+                        facing_back = false;
                         cloaked = false;
                     }
                 }
@@ -330,7 +339,8 @@ namespace guiCreator
                 {   // Prepare for cloak, make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
-                        PlayAnimation("Espion/cloak", 15, false);
+                        //PlayAnimation("Espion/cloak", 15, false);
+                        PlayAnimation("Espion/cloakstand", 12, true);
                         cloaked = true;
                     }
                 }
@@ -356,14 +366,29 @@ namespace guiCreator
 
 
 
-            if ((velocity.X < 0) || (velocity.X > 0))
+            if ( ((velocity.X < 0) || (velocity.X > 0)) && canAct==true)
             {
-                    PlayAnimation("Espion/run", 15, true);
+                if (elapsedAttackAnimation >= attackSpeed)
+                {
+                    if (cloaked)
+                        PlayAnimation("Espion/run", 15, true);
+                    else
+                        PlayAnimation("Espion/run", 15, true);
+                }
             }
             else
             {
-                    PlayAnimation("Espion/stand", 16, true);
+                if (elapsedAttackAnimation >= attackSpeed)
+                {
+                    if (cloaked && facing_back==false)
+                        PlayAnimation("Espion/cloakstand", 13, true);
+                    else if (cloaked && facing_back==true)
+                        PlayAnimation("Espion/cloakready", 13, true);
+                    else
+                        PlayAnimation("Espion/stand", 16, true);
+                }
             }
+
 
             mPreviousKeyboardState = aCurrentKeyboardState;
         }
@@ -392,13 +417,6 @@ namespace guiCreator
                 {
                     frameIndex = Math.Min(frameIndex + 1, frameCount - 1);
                 }
-            }
-            if (!animationIsLooping)
-            {
-                if (frameIndex < frameCount)
-                    canAct = false;
-                else
-                    canAct = true;
             }
             mSpriteTexture = theContentManager.Load<Texture2D>(animation + frameIndex);
         }
@@ -432,36 +450,62 @@ namespace guiCreator
                 {
                     if (cloaked == false)
                     {
-                        // TODO: regular attack
+                        elapsedAttackAnimation = 0;
+                        PlayAnimation("Espion/attack", 7, false);
+                        createAttackBounds();
+
+                        //Depending on the direction, the effect's position is modified...
+                        if (sDirection == -1)
+                        {
+                            Effect e_Slice;
+                            e_Slice = new Effect((int)(Position.X)-35, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
+                            e_Slice.LoadContent(theContentManager);
+                            level.AddLast(e_Slice);
+                        }
+                        else
+                        {
+                            Effect e_Slice;
+                            e_Slice = new Effect((int)(Position.X)-10, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
+                            e_Slice.LoadContent(theContentManager);
+                            level.AddLast(e_Slice);
+                        }
+
+
                     }
                     else
                     {
                         // PLAYER IS CLOAKED. Stealth arts activate!
-                        if (special_1 == true && facing_back == true)
+                        if (special_1 == true)
                         {
                             //All conditions met. Activate Paralyzing Strike
                             cloaked = false;
-                            PlayAnimation("Espion/cloakAttack", 8, false);
+                            //PlayAnimation("Espion/cloakAttack", 8, false);
                         }
-                        if (special_2 == true && facing_back == true)
+                        if (special_2 == true)
                         {
                             //All conditions met. Activate Gouging Blade
                             cloaked = false;
-                            PlayAnimation("Espion/cloakAttack", 8, false);
+                            //PlayAnimation("Espion/cloakAttack", 8, false);
                         }
-                        if (special_3 == true && facing_back == true)
+                        if (special_3 == true)
                         {
                             //All conditions met. Activate Backstab
                             cloaked = false;
-                            PlayAnimation("Espion/cloakAttack", 8, false);
+                            //PlayAnimation("Espion/cloakAttack", 8, false);
                         }
 
                     }
-
-                    if (elapsedAttackAnimation < attackSpeed)
-                        elapsedAttackAnimation++;
-                    attacking = false;
                 }
+            }
+            if (elapsedAttackAnimation < attackSpeed)
+            {
+                elapsedAttackAnimation++;
+                canAct = false;
+            }
+            else
+            {
+                canAct = true;
+                attacking = false;
             }
 
             return level;
@@ -527,13 +571,58 @@ namespace guiCreator
                             corrections.AddLast(getCorrectionVector(n));
                         }
                     }
-                    // TODO
-                    // If we are colliding with enemies while cloaked,
-                    // we change stances to ready our knives if the enemy's back is to us.
-                    if (facing_back == true)
+
+                    //We are colliding with demons.
+                    if ((n.GetType().ToString() == typeof(LesserDemon).ToString()))
                     {
-                        //change stance 
+                        if (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))
+                        {
+                            //If we're cloaked, we check if an enemy's back is to us.
+                            if (cloaked == true)
+                            {
+                                //if we're facing the same directions
+                                if (sDirection == -1 && n.getDirection() == true ||
+                                    sDirection != -1 && n.getDirection() == false)
+                                {
+                                    //make LoS Bounds in the back of the enemy & front of player
+                                    n.createBackBounds(n.getDirection());
+                                    createFrontBounds(getDirection());
+
+                                    //if we're intersecting with the back bounds 
+                                    if (IntersectPixels(frontBounds, textureData, n.backBounds, n.textureData))
+                                        facing_back = true;
+                                    else
+                                        facing_back = false;
+                                }
+                                else
+                                    facing_back = false;
+                            }
+                        }
                     }
+                    else
+                    {
+                        facing_back = false;
+                    }
+                    //we're still attacking, so check for any collisions with the attack box with enemies
+                    if (attacking)
+                    {
+                        {   //regular attack, then
+                            if (n.GetType().ToString() == typeof(LesserDemon).ToString())
+                            {
+                                if (IntersectPixels(attackBounds, textureData, n.sBounds, n.textureData))
+                                {
+                                    if (n.takeDamage(damageCalculation(attack)))
+                                    {
+                                        //delete enemy
+                                        level.Remove(n);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+
                 }
 
                 int horizontalSum = 0;
@@ -613,6 +702,10 @@ namespace guiCreator
                     }
                 }
             }
+            else
+            {
+                facing_back = false;
+            }
         }
 
         public override void createBounds()
@@ -623,6 +716,17 @@ namespace guiCreator
             boundsBottom = new Rectangle((int)(Position.X + 10), (int)(Position.Y + mSpriteTexture.Height), (mSpriteTexture.Width - 20), 5);
             boundsLeft = new Rectangle((int)(Position.X - 5), (int)Position.Y, 5, mSpriteTexture.Height);
             boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
+        }
+
+        // Creates a bounding box for attack (Space)
+        public void createAttackBounds()
+        {      
+            int half = (mSpriteTexture.Width / 2);
+
+            if (sDirection == (-1)) //facing left
+                attackBounds = new Rectangle((int)(Position.X - 15), (int)Position.Y, (half - 5), (mSpriteTexture.Height - 20));
+            else
+                attackBounds = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 120), (mSpriteTexture.Height - 20));
         }
 
         public void getCollisions(LinkedList<Sprite> level)
@@ -648,34 +752,12 @@ namespace guiCreator
                         return true;
                 }
 
-
-                //If we're cloaked, we check if an enemy's back is to us.
-                if (cloaked == true)
+                //Are we colliding with demons?
+                if ((n.GetType().ToString() == typeof(LesserDemon).ToString()))
                 {
-                    //if we're colliding with an enemy
-                    if ((n.GetType().ToString() == typeof(LesserDemon).ToString() && (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))))
-                    {
-                        //if we're facing the same directions
-                        if (sDirection == -1 && n.getDirection() == true ||
-                            sDirection != -1 && n.getDirection() == false)
-                        {
-                            //make LoS Bounds in the back of the enemy & front of player
-                            n.createBackBounds(n.getDirection());
-                            createFrontBounds(getDirection());
-
-                            //if we're intersecting with the back bounds 
-                            if (IntersectPixels(frontBounds, textureData, n.backBounds, n.textureData)) 
-                            {
-                                facing_back = true;
-                            }
-                        } else
-                            facing_back = false;
-                    }
-                        
+                    if (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))
+                        return true;
                 }
-
-
-
             }
             return false;
         }
@@ -882,6 +964,10 @@ namespace guiCreator
             theSpriteBatch.Draw(status_e, angel_status, null,
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
+
+            // DEBUG
+            //theSpriteBatch.Draw(_DEBUG, screenPos, attackBounds,
+            //    Color.Black, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
 
             // drawing the directions

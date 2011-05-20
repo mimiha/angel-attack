@@ -31,6 +31,8 @@ namespace guiCreator
         public Rectangle boundsBottom;
         public Rectangle boundsLeft;
         public Rectangle boundsRight;
+        public Rectangle backBounds;
+        public Rectangle frontBounds;
 
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
@@ -42,6 +44,7 @@ namespace guiCreator
         {
             DEFAULT,
             DASH,
+            E_SLICE,
             BACKDASH,
             CRITICAL,
         }
@@ -94,14 +97,16 @@ namespace guiCreator
             Vector2 playerPos = new Vector2();
             foreach (Sprite n in level)
             {
-                if (n.GetType().ToString() == typeof(Grenadier).ToString())
+                if (n.GetType().ToString() == typeof(Grenadier).ToString() ||
+                    n.GetType().ToString() == typeof(Espion).ToString() )
                 {
                     foundPlayer = true;
                     screenPos = n.screenPos;
                     playerPos = n.Position;
                 }
             }
-            if (foundPlayer && (this.GetType().ToString() != typeof(Grenadier).ToString()))
+            if (foundPlayer && (this.GetType().ToString() != typeof(Grenadier).ToString()) ||
+                foundPlayer && (this.GetType().ToString() != typeof(Espion).ToString()) )
             {
                 drawPosition = Position + screenPos - playerPos;
             }
@@ -189,7 +194,27 @@ namespace guiCreator
             boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
         }
 
+        //Parameter: getDirection()
+        public virtual void createBackBounds(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
 
+            if (dir == true)    //facing left
+                backBounds = new Rectangle((int)(Position.X+half), (int)Position.Y, half, mSpriteTexture.Height);
+            else
+                backBounds = new Rectangle((int)(Position.X), (int)Position.Y, half, mSpriteTexture.Height);
+        }
+
+        //Parameter: getDirection()
+        public virtual void createFrontBounds(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
+
+            if (dir == true)    //facing left
+                frontBounds = new Rectangle((int)(Position.X), (int)Position.Y, half, mSpriteTexture.Height);
+            else
+                frontBounds = new Rectangle((int)(Position.X + half), (int)Position.Y, half, mSpriteTexture.Height);
+        }
 
         //======================================
         // Virtual methods common to other objects.
@@ -203,6 +228,11 @@ namespace guiCreator
         public virtual float damageCalculation(float pureAttk) { return pureAttk; }
 
         // damage-versus-defense calculation
-        public virtual bool takeDamage(float damageAmount) { return false; } 
+        public virtual bool takeDamage(float damageAmount) { return false; }
+
+        // getting the direction of the sprite;
+        // true = left, false = right
+        public virtual bool getDirection() { return false; } 
+
     }
 }

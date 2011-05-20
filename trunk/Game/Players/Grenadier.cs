@@ -64,7 +64,6 @@ namespace guiCreator
             maxSpecial = 100,   // max special power available
             curSpecial = 100,   // current special
             defense = 20,       // damage reduced (%) from basic attacks
-            //block = 0,          // damage reduced (%) with blocking
             range = 300;        // range in pixels of bullets before they disappear
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
         //int combo = 0;          // combo counter
@@ -800,7 +799,14 @@ namespace guiCreator
             return false;
         }
 
-
+        // Getting direction.
+        // true = left; false = right
+        public override bool getDirection()
+        {
+            if (sDirection == (-1))
+                return true;
+            else return false;
+        }
 
         public override void Draw(SpriteBatch theSpriteBatch)
         {
