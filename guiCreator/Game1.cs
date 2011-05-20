@@ -41,6 +41,9 @@ namespace guiCreator
         Sprite mSprite;
         Text header,text;
 
+        // So Same Sprite doesn't keep being drawn in same location
+        Vector2 PrevPos = new Vector2();
+
         public struct LevelData
         {
             public LinkedList<Sprite> data;
@@ -258,6 +261,7 @@ namespace guiCreator
                 pos = handleMouse(pos);
                 mSprite.drawPosition = pos;
                 pos += camera;
+
                 if (keyState.IsKeyDown(Keys.Delete) == true)
                 {
                     mSprite.LoadContent(this.Content, "Delete");
@@ -290,12 +294,12 @@ namespace guiCreator
                 }
                 if (keyState.IsKeyDown(Keys.Z) == true)
                 {
-                    mSprite.LoadContent(this.Content, "Spawner");
+                    mSprite.LoadContent(this.Content, "Spawner_Left");
                     currentGuiObject = guiObject.SpawnerLeft;
                 }
                 if (keyState.IsKeyDown(Keys.X) == true)
                 {
-                    mSprite.LoadContent(this.Content, "Spawner");
+                    mSprite.LoadContent(this.Content, "Spawner_Right");
                     currentGuiObject = guiObject.SpawnerRight;
                 }
                 if (keyState.IsKeyDown(Keys.E) == true)
@@ -327,7 +331,7 @@ namespace guiCreator
                             }
                         }
                     }
-                    if (currentGuiObject == guiObject.Block)
+                    if (currentGuiObject == guiObject.Block && (PrevPos != pos))
                     {
                         Block c = new Block((int)pos.X, (int)pos.Y);
                         c.LoadContent(this.Content);
@@ -338,9 +342,11 @@ namespace guiCreator
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);/**/
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
-                        level.args.AddLast(d); 
+                        level.args.AddLast(d);
+                        if (level.data.Contains(c))
+                            Debug.WriteLine("Successful!"); 
                     }
-                    if (currentGuiObject == guiObject.Wall)
+                    if (currentGuiObject == guiObject.Wall && (PrevPos != pos))
                     {
                         Wall c = new Wall((int)pos.X, (int)pos.Y);
                         c.LoadContent(this.Content);
@@ -353,7 +359,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.Player)
+                    if (currentGuiObject == guiObject.Player && (PrevPos != pos))
                     {
                         Grenadier c = new Grenadier((int)pos.X, (int)pos.Y, 512, 384);
                         c.LoadContent(this.Content);
@@ -369,7 +375,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeLeft)
+                    if (currentGuiObject == guiObject.AverageJoeLeft && (PrevPos != pos))
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
                         c.LoadContent(this.Content);
@@ -383,7 +389,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)-1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeRight)
+                    if (currentGuiObject == guiObject.AverageJoeRight && (PrevPos != pos))
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
                         c.LoadContent(this.Content);
@@ -398,9 +404,9 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.SpawnerLeft)
+                    if (currentGuiObject == guiObject.SpawnerLeft && (PrevPos != pos))
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1);
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1, "Spawner_Left");
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
@@ -415,9 +421,9 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)-1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.SpawnerRight)
+                    if (currentGuiObject == guiObject.SpawnerRight && (PrevPos != pos))
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1);
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1, "Spawner_Right");
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
@@ -432,7 +438,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)1};
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.Protectee)
+                    if (currentGuiObject == guiObject.Protectee && (PrevPos != pos))
                     {
                         Protectee c = new Protectee((int)pos.X, (int)pos.Y);
                         c.LoadContent(this.Content);
@@ -446,6 +452,8 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
                         level.args.AddLast(d);
                     }
+                    // Setting past cursor position to stop redundant "level" modifying
+                    PrevPos = pos; 
                 }
                 mouseState = state;
             }

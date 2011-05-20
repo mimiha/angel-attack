@@ -937,6 +937,24 @@
       <Output>C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Font.xnb</Output>
       <Time>2011-05-17T12:07:00.0971275-07:00</Time>
     </Item>
+    <Item>
+      <Source>Spawner_Left.png</Source>
+      <Name>Spawner_Left</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Spawner_Left.xnb</Output>
+      <Time>2011-05-20T08:42:32.5531269-07:00</Time>
+    </Item>
+    <Item>
+      <Source>Spawner_Right.png</Source>
+      <Name>Spawner_Right</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Spawner_Right.xnb</Output>
+      <Time>2011-05-20T08:27:17.0827269-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
