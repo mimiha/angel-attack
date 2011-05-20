@@ -218,3 +218,5 @@ C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\obj\x86\Debug\ResolveAssembl
 C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\obj\x86\Debug\guiCreator.exe
 C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\obj\x86\Debug\guiCreator.pdb
+C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Spawner_Left.xnb
+C:\Users\Sebastian2\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Spawner_Right.xnb
