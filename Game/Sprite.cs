@@ -31,8 +31,11 @@ namespace guiCreator
         public Rectangle boundsBottom;
         public Rectangle boundsLeft;
         public Rectangle boundsRight;
+
         public Rectangle backBounds;
         public Rectangle frontBounds;
+        public Rectangle attackBounds;
+        public Rectangle rightHitBox;
 
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
@@ -215,6 +218,17 @@ namespace guiCreator
             else
                 frontBounds = new Rectangle((int)(Position.X + half), (int)Position.Y, half, mSpriteTexture.Height);
         }
+
+        public virtual void createHitBox(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
+
+            if (dir == false) //facing right
+                rightHitBox = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 80), (mSpriteTexture.Height - 20));
+            else
+                rightHitBox = new Rectangle((int)(Position.X), (int)Position.Y, 1, 1);
+        }
+
 
         //======================================
         // Virtual methods common to other objects.

@@ -235,14 +235,8 @@ namespace guiCreator
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
            
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
-
-            /*
-            graphics.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-            graphics.GraphicsDevice.RenderState.SourceBlend = Blend.SourceAlpha;
-            graphics.GraphicsDevice.RenderState.DestinationBlend = Blend.InverseSourceAlpha;
-            graphics.GraphicsDevice.RenderState.BlendFunction = BlendFunction.Add;
-             */
+            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
+            spriteBatch.Begin();
 
             foreach (Sprite n in currentLevel)
             {
