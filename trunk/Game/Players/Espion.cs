@@ -61,8 +61,6 @@ namespace guiCreator
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
         //int combo = 0;          // combo counter
 
-        public Rectangle attackBounds;
-
 
         // Attacking variables for the sprite
         bool attacking = false;
@@ -450,27 +448,7 @@ namespace guiCreator
                 {
                     if (cloaked == false)
                     {
-                        elapsedAttackAnimation = 0;
-                        PlayAnimation("Espion/attack", 7, false);
-                        createAttackBounds();
-
-                        //Depending on the direction, the effect's position is modified...
-                        if (sDirection == -1)
-                        {
-                            Effect e_Slice;
-                            e_Slice = new Effect((int)(Position.X)-35, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
-                            e_Slice.LoadContent(theContentManager);
-                            level.AddLast(e_Slice);
-                        }
-                        else
-                        {
-                            Effect e_Slice;
-                            e_Slice = new Effect((int)(Position.X)-10, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
-                            e_Slice.LoadContent(theContentManager);
-                            level.AddLast(e_Slice);
-                        }
-
-
+                        handleAttack(level, theContentManager);
                     }
                     else
                     {
@@ -512,8 +490,91 @@ namespace guiCreator
         }
 
 
+        public void handleAttack(LinkedList<Sprite> level, ContentManager theContentManager)
+        {
+            elapsedAttackAnimation = 0;
+            PlayAnimation("Espion/attack", 7, false);
+            createAttackBounds();
+            createBounds();
+
+            //Plays slicing effect
+            //Depending on the direction, the effect's position is modified...
+            if (sDirection == -1)
+            {
+                Effect e_Slice;
+                e_Slice = new Effect((int)(Position.X) - 35, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
+                e_Slice.LoadContent(theContentManager);
+                level.AddLast(e_Slice);
+            }
+            else
+            {
+                Effect e_Slice;
+                e_Slice = new Effect((int)(Position.X) - 10, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
+                e_Slice.LoadContent(theContentManager);
+                level.AddLast(e_Slice);
+            }
+
+            foreach (Sprite n in level)
+            {
+                //Make sure they're demons
+                if (n.GetType().ToString() == typeof(LesserDemon).ToString())
+                {
+                    //if facing left && monster is facing right
+                    if (sDirection == -1 && n.getDirection() == false)
+                    {
+                        n.createHitBox(n.getDirection());
+                        if (IntersectBounds(attackBounds, n.rightHitBox))
+                        {
+                            //Connecting hit
+                            if (n.takeDamage(damageCalculation(attack)))
+                            {
+                                //delete enemy
+                                level.Remove(n);
+                            }
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //facing right
+                        if (IntersectBounds(attackBounds, n.sBounds))
+                        {
+                            if (n.takeDamage(damageCalculation(attack)))
+                            {
+                                //delete enemy
+                                level.Remove(n);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
 
 
+        }
+
+
+        public override void createBounds()
+        {
+            sBounds = new Rectangle((int)Position.X, (int)Position.Y, mSpriteTexture.Width, mSpriteTexture.Height);
+
+            boundsTop = new Rectangle((int)(Position.X + 10), (int)(Position.Y - 5), (mSpriteTexture.Width - 20), 5);
+            boundsBottom = new Rectangle((int)(Position.X + 10), (int)(Position.Y + mSpriteTexture.Height), (mSpriteTexture.Width - 20), 5);
+            boundsLeft = new Rectangle((int)(Position.X - 5), (int)Position.Y, 5, mSpriteTexture.Height);
+            boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
+        }
+
+
+        // Creates a bounding box for attack (Space)
+        public void createAttackBounds()
+        {
+            int half = (mSpriteTexture.Width / 2);
+
+            if (sDirection == (-1)) //facing left
+                attackBounds = new Rectangle((int)(Position.X - 15), (int)Position.Y, (half - 5), (mSpriteTexture.Height - 20));
+            else
+                attackBounds = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 65), (mSpriteTexture.Height - 20));
+        }
 
 
         public void applyPhysics(float elapsed, LinkedList<Sprite> level)
@@ -559,6 +620,7 @@ namespace guiCreator
         // taken from http://go.colorize.net/xna/2d_collision_response_xna/index.html
         public void handleCollisions(LinkedList<Sprite> level)
         {
+            //First check if we're colliding with anything
             if (isColliding())
             {
                 LinkedList<CorrectionVector2> corrections = new LinkedList<CorrectionVector2>();
@@ -603,24 +665,7 @@ namespace guiCreator
                     {
                         facing_back = false;
                     }
-                    //we're still attacking, so check for any collisions with the attack box with enemies
-                    if (attacking)
-                    {
-                        {   //regular attack, then
-                            if (n.GetType().ToString() == typeof(LesserDemon).ToString())
-                            {
-                                if (IntersectPixels(attackBounds, textureData, n.sBounds, n.textureData))
-                                {
-                                    if (n.takeDamage(damageCalculation(attack)))
-                                    {
-                                        //delete enemy
-                                        level.Remove(n);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
+
 
 
                 }
@@ -708,26 +753,6 @@ namespace guiCreator
             }
         }
 
-        public override void createBounds()
-        {
-            sBounds = new Rectangle((int)Position.X, (int)Position.Y, mSpriteTexture.Width, mSpriteTexture.Height);
-
-            boundsTop = new Rectangle((int)(Position.X + 10), (int)(Position.Y - 5), (mSpriteTexture.Width - 20), 5);
-            boundsBottom = new Rectangle((int)(Position.X + 10), (int)(Position.Y + mSpriteTexture.Height), (mSpriteTexture.Width - 20), 5);
-            boundsLeft = new Rectangle((int)(Position.X - 5), (int)Position.Y, 5, mSpriteTexture.Height);
-            boundsRight = new Rectangle((int)(Position.X + mSpriteTexture.Height), (int)Position.Y, 5, mSpriteTexture.Height);
-        }
-
-        // Creates a bounding box for attack (Space)
-        public void createAttackBounds()
-        {      
-            int half = (mSpriteTexture.Width / 2);
-
-            if (sDirection == (-1)) //facing left
-                attackBounds = new Rectangle((int)(Position.X - 15), (int)Position.Y, (half - 5), (mSpriteTexture.Height - 20));
-            else
-                attackBounds = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 120), (mSpriteTexture.Height - 20));
-        }
 
         public void getCollisions(LinkedList<Sprite> level)
         {
@@ -964,12 +989,11 @@ namespace guiCreator
             theSpriteBatch.Draw(status_e, angel_status, null,
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
-
-            // DEBUG
+            // _DEBUG
             //theSpriteBatch.Draw(_DEBUG, screenPos, attackBounds,
-            //    Color.Black, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            //    Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
-
+            
             // drawing the directions
             if (sDirection == (-1))
             {
@@ -983,7 +1007,8 @@ namespace guiCreator
                 new Rectangle(0, 0, mSpriteTexture.Width, mSpriteTexture.Height),
                 Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.FlipHorizontally, 0);
             }
-
+             
+            
         }
 
     }

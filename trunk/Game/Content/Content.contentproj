@@ -587,11 +587,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="effects\dash\backward13.png">
-      <Name>backward13</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="effects\dash\backward2.png">
       <Name>backward2</Name>
       <Importer>TextureImporter</Importer>

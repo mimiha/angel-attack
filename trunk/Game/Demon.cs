@@ -15,6 +15,9 @@ namespace guiCreator
         int sDirection;
         Texture2D healthGreen;
         Texture2D healthRed;
+        //Texture2D _DEBUG;   //DEBUG BOUNDING BOXES
+
+
         int elapsedAttack = 0;
         int elapsedAttackAnimation = 60;
         const float ACCELERATION = 0.5f;
@@ -74,6 +77,7 @@ namespace guiCreator
         public LesserDemon(int startX, int startY, int direction) : base(startX, startY) 
         {
             sDirection = direction;
+
         }
 
         public override void LoadContent(ContentManager theContentManager)
@@ -82,6 +86,7 @@ namespace guiCreator
             base.LoadContent(theContentManager, ASSETNAME);
             healthGreen = theContentManager.Load<Texture2D>("UI/HealthGreen");
             healthRed = theContentManager.Load<Texture2D>("UI/HealthRed");
+            //_DEBUG = theContentManager.Load<Texture2D>("black");
         }
 
         public override LinkedList<Sprite> Update(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
@@ -482,6 +487,17 @@ namespace guiCreator
 
 
 
+        // Creates a bounding box for attack (Space)
+        public override void createHitBox(bool dir)
+        {
+            int half = (mSpriteTexture.Width / 2);
+
+            if (sDirection != (-1)) //facing left
+                rightHitBox = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 45), mSpriteTexture.Height);
+        }
+
+
+
 
         //=======================================================
         //= Overwritten functions from virtual methods in sprite.
@@ -540,6 +556,10 @@ namespace guiCreator
             theSpriteBatch.Draw(healthGreen, pos,
                new Rectangle(0, 0, (int)width, (int)height),
                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
+
+            // _DEBUG
+            //theSpriteBatch.Draw(_DEBUG, drawPosition, rightHitBox,
+            //    Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
 
             // drawing the directions
