@@ -55,7 +55,7 @@ Espion
   * Death
   * *Standing - Cloaked*
   * Running - Cloaked
-  * Cloaked - Raise Dagger
+  * *Cloaked - Raise Dagger*
   * Cloaked - Stab
   * *Melee attack 1*
   * Melee attack 2
@@ -63,7 +63,7 @@ Espion
 
 Lancer
   * *Standing*
-  * _Running_
+  * *Running*
   * Dashing
   * Damaged 1
   * Damaged 2
