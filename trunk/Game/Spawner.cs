@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics; 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+/*------------------------------EMMANUEL'S EDITS--------------------------------
+ * 01. Added "DemonCount" field
+ * 02. Edited "Update()" to make Spawn a number based on a condition
+ * 03. 2nd constructor for Spawner created
+ */
 namespace guiCreator
 {
     public class Spawner : Sprite
@@ -14,14 +19,23 @@ namespace guiCreator
         int elapsed = 0;
         int spawnDelay = 100;
         
-        int DemonCount = 0;        // The Number of demons comming from This Spawner!
-        bool DoneSpawning = false; // false if enemies are still being spawned true for not
+        int DemonCount = 1;        // The Number of demons comming from This Spawner!
 
         public Spawner(int startX, int startY, int delay, string type, int direction) : base(startX, startY)
+        { 
+            spawnDelay = delay;
+            sType = type;
+            sArgs = new object[] { startX, startY, direction };
+        }
+
+        // New Constructor initializing number of enemies spawned
+        public Spawner(int startX, int startY, int delay, string type, int direction, int DemonNumber)
+            : base(startX, startY)
         {
             spawnDelay = delay;
             sType = type;
             sArgs = new object[] { startX, startY, direction };
+            DemonCount = DemonNumber; 
         }
 
         public override void LoadContent(ContentManager theContentManager)
@@ -36,14 +50,23 @@ namespace guiCreator
                  elapsed++;
                  
                  // Keeps on Spawning till no more need to be spawned. 
+                 if (DemonCount > 0 && !(DoneSpawning))
+                 {
+
                      if (elapsed >= spawnDelay)
                      {
                          elapsed = 0;
                          Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(sType), sArgs);
                          a.LoadContent(theContentManager);
                          level.AddLast(a);
+                         --DemonCount; // Reduce count
                      }
-                     --DemonCount;
+
+                 }
+                 else
+                 {
+                     DoneSpawning = true;   // We're done spawning now!
+                 }
 
                  base.Update(theGameTime, level, theContentManager);
             }
@@ -58,11 +81,7 @@ namespace guiCreator
         }
 
         // To know if the spawner is done or not.
-        public bool SPAWNSTATE
-        {
-            get { return DoneSpawning; }
-            set { DoneSpawning = value; }
-        }
+
     }
     
 }

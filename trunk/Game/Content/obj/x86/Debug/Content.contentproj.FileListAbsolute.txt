@@ -1,1 +1,3 @@
 C:\Users\Sebastian\Desktop\angelattack\Game\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Sebastian2\Desktop\angel-attack\Game\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Sebastian\Desktop\angel-attack\Game\Content\obj\x86\Debug\ResolveAssemblyReference.cache
