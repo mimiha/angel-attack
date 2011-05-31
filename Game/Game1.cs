@@ -4,7 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Reflection;
-using System.Runtime.InteropServices; 
+using System.Runtime.InteropServices;
+using System.Diagnostics; 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -18,7 +19,16 @@ using Microsoft.Xna.Framework.Storage;
 /*------------------------------EMMANUEL'S EDITS--------------------------------
  * 01. Changed "LoadContent()" to work with new file format
  * 02. Cleaning up comments & adding some to "LoadContent()"
+ * 03. Added fields for use with spawner states
+ * 04. Made a "LoadContent()" standalone to test spawner things
+ * 05. Editted "Update()" to detect enemies 
+ * 06. "LoadContent()" counts how many spawners are in level
+ * 
 */
+/*------------------------------EMMANUEL'S PROBLEMS----------------------------
+ * 01. Switching window control between level results in major slow down
+ */
+
 namespace guiCreator
 {
     /// <summary>
@@ -35,6 +45,10 @@ namespace guiCreator
         KeyboardState currentKeyboardState = Keyboard.GetState();
         KeyboardState oldKeyboardState = Keyboard.GetState();
 
+        // Track non-active & total Spawners
+        int DoneSpawner = 0;
+        int TotalSpawner = 0; 
+
         /*
          * The Gamer Services functionality must be initialized before you call this method. 
          * The easiest way to do that is to add a GamerServicesComponent to the Game.Components collection in the constructor of your Game class.
@@ -47,7 +61,7 @@ namespace guiCreator
             //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
         }
-
+        
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -73,22 +87,22 @@ namespace guiCreator
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             // TODO: use this.Content to load your game content here
-            string[] commandArgs = Environment.GetCommandLineArgs();
+            /*string[] commandArgs = Environment.GetCommandLineArgs();
             if (commandArgs.Length > 1)
-            {
-                string fileName = commandArgs[1];
+            {*/
+                string fileName = "test";
                 if (File.Exists(fileName))
                 {
-                /*----------FUNC KEY---------
-                 * STM = Stream
-                 * ARG = Argument
-                 * ARY = Array
-                 * STR = string
-                 * LL  = LinkedList<>
-                 * SPR = Sprite
-                 * REP = Representate/Representation
-                 * DRSPROBJ = Derived Sprite Object
-                 */
+                    /*----------FUNC KEY---------
+                     * STM = Stream
+                     * ARG = Argument
+                     * ARY = Array
+                     * STR = string
+                     * LL  = LinkedList<>
+                     * SPR = Sprite
+                     * REP = Representate/Representation
+                     * DRSPROBJ = Derived Sprite Object
+                     */
 
                     // STMs for File & Reading. FileSTM opens the "fileName" file located here
                     // "angelattack\guiCreator\bin\x86\Debug" And ReadSTM reads from that file.
@@ -96,7 +110,7 @@ namespace guiCreator
                     StreamReader SR = new StreamReader(FS);
 
                     string SpriteTypeData = SR.ReadLine();      // Gets the SPROBJ for the ARGs
-                    
+
                     // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
                     // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
                     string[] FileLine = SR.ReadLine().Split(new char[] { ' ' });
@@ -133,11 +147,15 @@ namespace guiCreator
                         ArgumentLength = Convert.ToInt32(FileLine[3]);
                         ArgumentValues = new object[ArgumentLength];
 
+                        // Tells me how many Spawners are in level. 
+                        if (SpriteTypeData == "guiCreator.Spawner")
+                            ++TotalSpawner;
+
                         // Reads & converts ARGs to proper types for use by derived SPR object(DSPROBJ)
                         while (Iterator1 < ArgumentLength)
                         {
                             // The first line of ARGs. All values of same type. Refer above 4 "Split()"
-                            // FileLine[0] now has a STR REP of a type, which will be used later. 
+                            // FileLine[0] now has a STR REP of a type, which will be used later.
                             FileLine = SR.ReadLine().Split(new char[] { ' ' });
                             ArgumentType = Type.GetType(FileLine[0]);
 
@@ -157,8 +175,8 @@ namespace guiCreator
                                                 (Type.GetType(SpriteTypeData), ArgumentValues);
                         SpriteInstance.LoadContent(this.Content);
 
-                        // The Arguments are the last items read in a cycle of this loop. This makes 
-                        // sure "FileLine" can be stored with some data from the file
+                        // The Arguments are the last items read in loop cycle. This fetches the next
+                        // DRSPROBJ if the there is still data to read from file.
                         if (SR.Peek() != -1)
                         {
                             SpriteTypeData = SR.ReadLine();
@@ -178,11 +196,11 @@ namespace guiCreator
                 {
                     this.Exit();
                 }
-            }
+            /*}
             else
             {
                 this.Exit();
-            }
+            }*/
         }
 
         /// <summary>
@@ -209,21 +227,47 @@ namespace guiCreator
             // TODO: Add your update logic here
             LinkedListNode<Sprite> n = currentLevel.First;
             bool baseExists = false;
+
+            // Any enemies to fight?
+            bool DemonExists = false; 
+
             while (n != null)
             {
-                if (n.Value.GetType().ToString() == typeof(Protectee).ToString())
+                if ((n.Value.GetType() == typeof(Protectee)) ||
+                    (n.Value.GetType() == typeof(Spawner)))
                 {
                     baseExists = true;
+
+                    // Add to number of spawners done spawning
+                    if (n.Value.DoneSpawning == true)
+                        ++DoneSpawner; 
                 }
+                else
+                if(n.Value.GetType() == typeof (LesserDemon))
+                    // Enemies do exist in this update cycle
+                    DemonExists = true; 
+
                 currentLevel = n.Value.Update(gameTime, currentLevel, this.Content);
                 n = n.Next;
             }
+
             if (!baseExists)
             {
                 MessageBox(new IntPtr(0), "Game Over!", "Angel Attack", 0);
                 this.Exit();
             }
-           
+            
+            // When all Spawners are done & no more enemies to beat 
+            // you've won the level!
+            if ((DoneSpawner == TotalSpawner)&&(DemonExists == false))
+            {
+                MessageBox(new IntPtr(0), "You have destroyed your enemies!",
+                           "Angel Attack", 0);
+                this.Exit();
+            }
+
+            DoneSpawner = 0;
+
             base.Update(gameTime);
         }
 

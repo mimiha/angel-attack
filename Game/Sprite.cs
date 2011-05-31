@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+/*------------------------------EMMANUEL'S EDITS--------------------------------
+ * 01. Added "DoneSpawning" Field detects if spawner is done or not
+ */
 namespace guiCreator
 {
     public class Sprite
@@ -42,7 +44,9 @@ namespace guiCreator
 
         public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
-
+        // The Flag to stop enemies from Spawning!!!
+        public bool DoneSpawning = false;  
+        
         public enum effectName
         {
             DEFAULT,
@@ -250,3 +254,19 @@ namespace guiCreator
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

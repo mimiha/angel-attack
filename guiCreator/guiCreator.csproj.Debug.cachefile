@@ -103,4 +103,6 @@ Content\UI\wing.xnb
 Content\UI\status_sp.xnb
 Content\Spawner_Left.xnb
 Content\Spawner_Right.xnb
+Content\GetSpriteInfo.xnb
+Content\SetSpawn.xnb
 Content\Font.xnb
