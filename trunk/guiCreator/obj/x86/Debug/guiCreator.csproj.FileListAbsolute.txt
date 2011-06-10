@@ -336,3 +336,5 @@ C:\Users\Sebastian\Desktop\angel-attack\guiCreator\obj\x86\Debug\ResolveAssembly
 C:\Users\Sebastian\Desktop\angel-attack\guiCreator\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Sebastian\Desktop\angel-attack\guiCreator\obj\x86\Debug\guiCreator.exe
 C:\Users\Sebastian\Desktop\angel-attack\guiCreator\obj\x86\Debug\guiCreator.pdb
+C:\Users\Sebastian\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\BackGround1.xnb
+C:\Users\Sebastian\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\BackGround2.xnb

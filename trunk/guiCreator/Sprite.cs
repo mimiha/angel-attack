@@ -39,7 +39,7 @@ namespace guiCreator
 
         public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
-
+        public bool DoneSpawning = false; // Spawn completion flag
         public enum effectName
         {
             DEFAULT,

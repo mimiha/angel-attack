@@ -9,13 +9,12 @@ namespace guiCreator
     public class Spawner : Sprite
     {
         string ASSETNAME = "Spawner";
-        string sType;
-        object[] sArgs;
+        public string sType;
+        public object[] sArgs;
         int elapsed = 0;
-        int spawnDelay = 100;
+        public int spawnDelay = 100;
 
-        int DemonCount = 0;        // The Number of demons comming from This Spawner!
-        bool DoneSpawning = false; // false if enemies are still being spawned true for not
+        int DemonCount;        // The Number of demons comming from This Spawner!
 
         public Spawner(int startX, int startY, int delay, string type, int direction) : base(startX, startY)
         {
@@ -30,6 +29,19 @@ namespace guiCreator
             // The new graphic displayed is this
             ASSETNAME = ASSETFILE; 
             
+            spawnDelay = delay;
+            sType = type;
+            sArgs = new object[] { startX, startY, direction };
+        }
+
+        // My Spawner initializer
+        public Spawner(int startX, int startY, int delay, string type, 
+                       int direction, string ASSETFILE, int EnemyNumber)
+            : base(startX, startY)
+        {
+            // The new graphic displayed is this
+            ASSETNAME = ASSETFILE;
+            DemonCount = EnemyNumber; 
             spawnDelay = delay;
             sType = type;
             sArgs = new object[] { startX, startY, direction };

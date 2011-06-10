@@ -973,6 +973,24 @@
       <Output>C:\Users\Sebastian\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\Font.xnb</Output>
       <Time>2011-05-17T12:07:02-07:00</Time>
     </Item>
+    <Item>
+      <Source>BackGround1.jpg</Source>
+      <Name>BackGround1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Sebastian\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\BackGround1.xnb</Output>
+      <Time>2011-06-09T22:57:31.8667077-07:00</Time>
+    </Item>
+    <Item>
+      <Source>BackGround2.jpg</Source>
+      <Name>BackGround2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Sebastian\Desktop\angel-attack\guiCreator\bin\x86\Debug\Content\BackGround2.xnb</Output>
+      <Time>2011-06-09T22:58:37.0117077-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

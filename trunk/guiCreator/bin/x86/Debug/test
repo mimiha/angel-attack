@@ -1,55 +1,265 @@
-guiCreator.Block
-Argument Length = 2
-System.Int32 400 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 440 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 480 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 520 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 560 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 600 320
-guiCreator.Block
-Argument Length = 2
-System.Int32 640 320
-guiCreator.Block
-Argument Length = 2
-System.Int32 680 320
-guiCreator.Block
-Argument Length = 2
-System.Int32 360 320
-guiCreator.Block
-Argument Length = 2
-System.Int32 320 320
-guiCreator.Block
-Argument Length = 2
-System.Int32 280 320
 guiCreator.Spawner
 Argument Length = 5
-System.Int32 680 240 5000
+System.Int32 280 360 5000
 System.String guiCreator.LesserDemon
 System.Int32 -1
 guiCreator.Spawner
 Argument Length = 5
-System.Int32 280 240 5000
+System.Int32 280 360 5000
 System.String guiCreator.LesserDemon
-System.Int32 1
-guiCreator.Protectee
-Argument Length = 2
-System.Int32 440 280
-guiCreator.Wall
-Argument Length = 2
-System.Int32 360 240
-guiCreator.Wall
-Argument Length = 2
-System.Int32 600 240
-guiCreator.Grenadier
-Argument Length = 4
-System.Int32 480 240 512 384
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 280 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
