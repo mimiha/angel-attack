@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
  * 04. "GuiLinkManage.cs" check it out
  * 05. Optimized save & load functions for level
  * 06. Optimized "UpdateGui()" now you can click & drag to create levels. Try it out!
+ * 07. Added "EditGuiObject" stuff to "Draw()", "UpdateGui()"
  */
 /*-----------------------------EMMANUEL'S NOTES---------------------------------
  * POD = Plain Old Data
@@ -39,10 +40,13 @@ namespace guiCreator
         //DO NOT CHANGE THIS.
         const int cameraDist = 40;
         Sprite mSprite;
+        Sprite BackGround; 
+
         Text header,text;
 
         // So Same Sprite doesn't keep being drawn in same location
         Vector2 PrevPos = new Vector2();
+        Vector2 OuterPos = new Vector2(); 
 
         public struct LevelData
         {
@@ -52,6 +56,9 @@ namespace guiCreator
             public LinkedList<object[]> args;
         }
         LevelData level = new LevelData();
+
+        // Tracks levels that have been saved so far. 
+        LinkedList<string> LevelNames = new LinkedList<string>(); 
 
         // Mouse/Keyboard input
         MouseState mouseState = Mouse.GetState();
@@ -74,19 +81,26 @@ namespace guiCreator
             AverageJoeRight,
             SpawnerLeft,
             SpawnerRight,
-            Protectee
+            Protectee, 
+            CurrentSpawner, 
+            NewSpawner
         }
 
         //Sets default object in GUI mode to be the block
         guiObject currentGuiObject = guiObject.Block;
+        guiObject previousGuiObject = guiObject.Block; 
 
         enum guiMode
         {
             Edit,
             Save,
+            SaveLevels, 
+            LoadLevels,
             Load,
             Test, 
-            LinkListManage
+            LinkListManage, 
+            EditGuiObject, 
+            PlayCreatedLevels
         }
 
         // sets default mode to editing in GUI mode
@@ -117,14 +131,18 @@ namespace guiCreator
         {
             level.data = new LinkedList<Sprite>();
             level.numArgs = new LinkedList<int>();
-            //level.args = new LinkedList<LinkedList<object>>();
             level.args = new LinkedList<object[]>(); 
             mSprite = new Sprite(10, 10);
             header = new Text(10, 10);
             text = new Text(100, 10);
+            BackGround = new Sprite(0, 0);
+
+            // Loads LevelList
+            LoadLevelList(); 
 
             base.Initialize();
         }
+
 
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -137,6 +155,7 @@ namespace guiCreator
             mSprite.LoadContent(this.Content, "Block");
             header.LoadContent(this.Content, "Font");
             text.LoadContent(this.Content, "Font");
+            BackGround.LoadContent(this.Content, "BackGround1"); 
         }
 
 
@@ -163,27 +182,9 @@ namespace guiCreator
             base.Update(gameTime);
         }
 
-        private void updateGui()
+        private void FunctionKeys()
         {
-            // Camera moving with arrow keys in GUI mode.
-            KeyboardState keyState = Keyboard.GetState();
-            if ((keyState.IsKeyDown(Keys.Up) == true))
-            {
-                camera.Y -= cameraDist;
-            }
-            if ((keyState.IsKeyDown(Keys.Down) == true))
-            {
-                camera.Y += cameraDist;
-            }
-            if ((keyState.IsKeyDown(Keys.Left) == true))
-            {
-                camera.X -= cameraDist;
-            }
-            if ((keyState.IsKeyDown(Keys.Right) == true))
-            {
-                camera.X += cameraDist;
-            }
-
+            keyState = Keyboard.GetState();
             // Checks if keys are pressed.
             if (keyState.IsKeyDown(Keys.F1) == true)
             {
@@ -214,6 +215,21 @@ namespace guiCreator
             {
                 currentGuiMode = guiMode.LinkListManage;
             }
+            // EditGuiObject entered by F5
+            if (keyState.IsKeyDown(Keys.F5) == true)
+            {
+                // Reset output
+                hFileName = "In EditGuiObject mode now";
+                fileName = "";
+                currentGuiMode = guiMode.EditGuiObject;
+            }
+            // PlayCreatedLevels enterted by F6
+            if (keyState.IsKeyDown(Keys.F6) == true)
+            {
+                // Prompt for user input
+                hFileName = "Press Enter to play through all created levels";
+                currentGuiMode = guiMode.PlayCreatedLevels;
+            }
             if (keyState.IsKeyDown(Keys.F10) == true)
             {
                 currentGuiMode = guiMode.Test;
@@ -226,9 +242,12 @@ namespace guiCreator
                     "Special Keys / Functions\n" +
                     "====================\n" +
                     "F1 = New Level\n" +
-                    "F2 = Load Level\n" + 
+                    "F2 = Load Level\n" +
                     "F3 = Save Level\n" +
-                    "F10 = Test Level\n" + 
+                    "F4 = LinkedList Manage\n" +
+                    "F5 = Edit Gui Object\n" +
+                    "F6 = Play Through all Created Levels\n" +
+                    "F10 = Test Level\n" +
                     "F12 = Help\n" +
                     "Delete = Delete Mode\n\n" +
                     "Blocks\n" +
@@ -239,248 +258,324 @@ namespace guiCreator
                     "Enemies / Players\n" +
                     "====================\n" +
                     "A = Grenadier\n" +
-                    "S = Espion\n" + 
+                    "S = Espion\n" +
                     "D = Average Joe (moving left)\n" +
                     "F = Average Joe (moving right)\n\n" +
-                    "Spawners\n" + 
+                    "Spawners\n" +
                     "====================\n" +
                     "Z = Average Joe Spawner (moving left)\n" +
                     "X = Average Joe Spawner (moving right)"
                     , "Help", 0);
             }
-            if (keyState.IsKeyDown(Keys.Escape) == true)
+        }
+        private void ChangeSpriteImage()
+        {
+            keyState = Keyboard.GetState();
+            if (keyState.IsKeyDown(Keys.Delete) == true)
             {
-                this.Exit();
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Delete");
+                currentGuiObject = guiObject.Delete;
             }
-            if ((currentGuiMode == guiMode.Save) || (currentGuiMode == guiMode.Load) || (currentGuiMode == guiMode.Test))
+            if (keyState.IsKeyDown(Keys.Q) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Block");
+                currentGuiObject = guiObject.Block;
+            }
+            if (keyState.IsKeyDown(Keys.W) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Wall");
+                currentGuiObject = guiObject.Wall;
+            }
+            if (keyState.IsKeyDown(Keys.A) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Grenadier/Stand0");
+                currentGuiObject = guiObject.Grenadier;
+            }
+            if (keyState.IsKeyDown(Keys.S) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Espion/Stand0");
+                currentGuiObject = guiObject.Espion;
+            }
+            if (keyState.IsKeyDown(Keys.D) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
+                currentGuiObject = guiObject.AverageJoeLeft;
+            }
+            if (keyState.IsKeyDown(Keys.F) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
+                currentGuiObject = guiObject.AverageJoeRight;
+            }
+            if (keyState.IsKeyDown(Keys.Z) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Spawner_Left");
+                currentGuiObject = guiObject.SpawnerLeft;
+            }
+            if (keyState.IsKeyDown(Keys.X) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Spawner_Right");
+                currentGuiObject = guiObject.SpawnerRight;
+            }
+            if (keyState.IsKeyDown(Keys.E) == true)
+            {
+                // Reseting Position
+                PrevPos = new Vector2(0, 0);
+                mSprite.LoadContent(this.Content, "Protectee");
+                currentGuiObject = guiObject.Protectee;
+            }
+        }
+        private void LeftButtonActs(Vector2 pos)
+        {
+            if (currentGuiObject == guiObject.Block && (PrevPos != pos))
+            {
+                Debug.WriteLine("PrevPos values " + PrevPos.X.ToString() + PrevPos.Y.ToString());
+                Debug.WriteLine("OuterPos values " + OuterPos.X.ToString() + OuterPos.Y.ToString());
+                Block c = new Block((int)pos.X, (int)pos.Y);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(2);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y };
+                level.args.AddLast(d);
+                if (level.data.Contains(c))
+                    Debug.WriteLine("Successful!");
+            }
+
+            if (currentGuiObject == guiObject.Wall && (PrevPos != pos))
+            {
+                Wall c = new Wall((int)pos.X, (int)pos.Y);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(2);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.Grenadier && (PrevPos != pos))
+            {
+                Grenadier c = new Grenadier((int)pos.X, (int)pos.Y, 512, 384);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(4);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.Espion && (PrevPos != pos))
+            {
+                Espion c = new Espion((int)pos.X, (int)pos.Y, 512, 384);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(4);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.AverageJoeLeft && (PrevPos != pos))
+            {
+                LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(3);
+                //LinkedList<object> d = new LinkedList<object>();
+                /**
+                d.AddLast((int)pos.X);
+                d.AddLast((int)pos.Y);
+                d.AddLast((int)-1);/**/
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)-1 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.AverageJoeRight && (PrevPos != pos))
+            {
+                LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(3);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)1 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.SpawnerLeft && (PrevPos != pos))
+            {
+                Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1, "Spawner_Left");
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(5);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)-1 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.SpawnerRight && (PrevPos != pos))
+            {
+                Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1, "Spawner_Right");
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(5);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)1 };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.Protectee && (PrevPos != pos))
+            {
+                Protectee c = new Protectee((int)pos.X, (int)pos.Y);
+                c.LoadContent(this.Content);
+                level.data.AddLast(c);
+                level.numArgs.AddLast(2);
+                object[] d = new object[] { (int)pos.X, (int)pos.Y };
+                level.args.AddLast(d);
+            }
+
+            if (currentGuiObject == guiObject.Delete)
+            {
+                LinkedListNode<Sprite> n = level.data.First;
+                LinkedListNode<int> m = level.numArgs.First;
+                LinkedListNode<object[]> o = level.args.First;
+                while (n != null)
+                {
+                    if (((pos.X + 20) > n.Value.Position.X) && ((pos.X + 20) < (n.Value.Position.X + n.Value.Size.Right)) && ((pos.Y + 20) > n.Value.Position.Y) && ((pos.Y + 20) < (n.Value.Position.Y + n.Value.Size.Bottom)))
+                    {
+                        level.data.Remove(n);
+                        level.numArgs.Remove(m);
+                        level.args.Remove(o);
+                        break;
+                    }
+                    else
+                    {
+                        n = n.Next;
+                        m = m.Next;
+                        o = o.Next;
+                    }
+                }
+            }
+        }
+        private void EditGuiActs(Vector2 pos)
+        {
+            // Setup to editting Spawner
+            if (currentGuiMode == guiMode.EditGuiObject)
+            {
+                // Try & get a Sprite Object & test for a Spawner type
+                mSprite = level.data.LastOrDefault(LevelY => LevelY.drawPosition == pos);
+                if ((mSprite != null) &&
+                    (mSprite.GetType() == typeof(Spawner)))
+                {
+                    // Load A Spawn Texture & Display its' enemycount
+                    mSprite.LoadContent(this.Content);
+                    Spawner SpawnCopyEnemyCount = (Spawner)mSprite;
+
+                    if (currentGuiObject != guiObject.NewSpawner)
+                        hFileName = "The type is a Spawner! Set enemy Count?[Y\\N]\n" +
+                                    "enemy count " + SpawnCopyEnemyCount.ENEMYNUMBER;
+
+                    // When ready to change the 
+                    if (keyState.IsKeyDown(Keys.Y) == true)
+                    {
+                        hFileName = "";
+                        currentGuiObject = guiObject.NewSpawner;
+                    }
+                }
+
+                else
+                {
+                    mSprite = new Sprite((int)pos.X, (int)pos.Y);
+                    mSprite.drawPosition = pos;
+                    mSprite.LoadContent(this.Content, "SetSpawn");
+                    hFileName = "It's not a Spawner! ";
+                }
+
+                //currentGuiObject = guiObject.CurrentSpawner;
+            }
+
+            if (currentGuiObject == guiObject.NewSpawner)
+            {
+                if ((fileName.ToUpper() == "Y") ||
+                   (fileName.ToLower() == "y"))
+                    fileName = fileName.Remove(fileName.Length - 1, 1);
+                updateText();
+                if (keyState.IsKeyDown(Keys.Enter) == true)
+                    hFileName = "Done!";
+            }
+        }
+
+        private void updateGui()
+        {
+            // Camera moving with arrow keys in GUI mode.
+            KeyboardState keyState = Keyboard.GetState();
+            
+            // Provides different things based on F-key=============================
+            FunctionKeys(); 
+            //======================================================================
+
+            if ((keyState.IsKeyDown(Keys.Up) == true))
+                camera.Y -= cameraDist;
+            if ((keyState.IsKeyDown(Keys.Down) == true))
+                camera.Y += cameraDist;
+            if ((keyState.IsKeyDown(Keys.Left) == true))
+                camera.X -= cameraDist;
+            if ((keyState.IsKeyDown(Keys.Right) == true))
+                camera.X += cameraDist;
+
+            if (keyState.IsKeyDown(Keys.Escape) == true)
+                this.Exit();
+
+            if ((currentGuiMode == guiMode.Save) || 
+                (currentGuiMode == guiMode.Load) || 
+                (currentGuiMode == guiMode.Test))
+                updateGui();
+
+            if ((currentGuiMode == guiMode.PlayCreatedLevels))
             {
                 updateText();
+                if (fileName.Length > 1)
+                    fileName = fileName.Remove(fileName.Length-2, 2);
             }
             else
             {
                 MouseState state = Mouse.GetState();
                 Vector2 pos = new Vector2(state.X, state.Y);
                 pos = handleMouse(pos);
-                mSprite.drawPosition = pos;
-                pos += camera;
+                if (currentGuiMode != guiMode.EditGuiObject)
+                    mSprite.drawPosition = pos;
+                OuterPos = pos += camera;
 
-                if (keyState.IsKeyDown(Keys.Delete) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Delete");
-                    currentGuiObject = guiObject.Delete;
-                }
-                if (keyState.IsKeyDown(Keys.Q) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Block");
-                    currentGuiObject = guiObject.Block;
-                }
-                if (keyState.IsKeyDown(Keys.W) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Wall");
-                    currentGuiObject = guiObject.Wall;
-                }
-                if (keyState.IsKeyDown(Keys.A) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Grenadier/Stand0");
-                    currentGuiObject = guiObject.Grenadier;
-                }
-                if (keyState.IsKeyDown(Keys.S) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Espion/Stand0");
-                    currentGuiObject = guiObject.Espion;
-                }
-                if (keyState.IsKeyDown(Keys.D) == true)
-                {
-                    mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
-                    currentGuiObject = guiObject.AverageJoeLeft;
-                }
-                if (keyState.IsKeyDown(Keys.F) == true)
-                {
-                    mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
-                    currentGuiObject = guiObject.AverageJoeRight;
-                }
-                if (keyState.IsKeyDown(Keys.Z) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Spawner_Left");
-                    currentGuiObject = guiObject.SpawnerLeft;
-                }
-                if (keyState.IsKeyDown(Keys.X) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Spawner_Right");
-                    currentGuiObject = guiObject.SpawnerRight;
-                }
-                if (keyState.IsKeyDown(Keys.E) == true)
-                {
-                    mSprite.LoadContent(this.Content, "Protectee");
-                    currentGuiObject = guiObject.Protectee;
-                }
+                // Changes image guiCreator displays==================================
+                ChangeSpriteImage();
+                //====================================================================
+
+                // Finds Spawners and sets their spawn count==========================
+                EditGuiActs(pos);
+                //====================================================================
+
                 if ((state.LeftButton == ButtonState.Pressed))
                 {
-                    if (currentGuiObject == guiObject.Delete)
-                    {
-                        LinkedListNode<Sprite> n = level.data.First;
-                        LinkedListNode<int> m = level.numArgs.First;
-                        LinkedListNode<object[]> o = level.args.First;
-                        while (n != null)
-                        {
-                            if (((pos.X + 20) > n.Value.Position.X) && ((pos.X + 20) < (n.Value.Position.X + n.Value.Size.Right)) && ((pos.Y + 20) > n.Value.Position.Y) && ((pos.Y + 20) < (n.Value.Position.Y + n.Value.Size.Bottom)))
-                            {
-                                level.data.Remove(n);
-                                level.numArgs.Remove(m);
-                                level.args.Remove(o);
-                                break;
-                            }
-                            else
-                            {
-                                n = n.Next;
-                                m = m.Next;
-                                o = o.Next;
-                            }
-                        }
-                    }
-                    if (currentGuiObject == guiObject.Block && (PrevPos != pos))
-                    {
-                        Block c = new Block((int)pos.X, (int)pos.Y);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(2);
-                        /**
-                        /LinkedList<object> d = new LinkedList<object>();
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);/**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y };
-                        level.args.AddLast(d);
-                        if (level.data.Contains(c))
-                            Debug.WriteLine("Successful!"); 
-                    }
-                    if (currentGuiObject == guiObject.Wall && (PrevPos != pos))
-                    {
-                        Wall c = new Wall((int)pos.X, (int)pos.Y);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(2);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y); /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.Grenadier)
-                    {
-                        Grenadier c = new Grenadier((int)pos.X, (int)pos.Y, 512, 384);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(4);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        //object[] d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast(512);
-                        d.AddLast(384);/**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.Espion)
-                    {
-                        Espion c = new Espion((int)pos.X, (int)pos.Y, 512, 384);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(4);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        //object[] d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast(512);
-                        d.AddLast(384);/**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.AverageJoeLeft)
-                    {
-                        LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(3);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast((int)-1);/**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)-1 };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.AverageJoeRight && (PrevPos != pos))
-                    {
-                        LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(3);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast((int)1);
-                        /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)1 };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.SpawnerLeft && (PrevPos != pos))
-                    {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1, "Spawner_Left");
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(5);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast((int)5000);
-                        d.AddLast("guiCreator.LesserDemon");
-                        d.AddLast((int)-1);
-                        /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)-1 };
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.SpawnerRight && (PrevPos != pos))
-                    {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1, "Spawner_Right");
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(5);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        d.AddLast((int)5000);
-                        d.AddLast("guiCreator.LesserDemon");
-                        d.AddLast((int)1);
-                        /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)1};
-                        level.args.AddLast(d);
-                    }
-                    if (currentGuiObject == guiObject.Protectee && (PrevPos != pos))
-                    {
-                        Protectee c = new Protectee((int)pos.X, (int)pos.Y);
-                        c.LoadContent(this.Content);
-                        level.data.AddLast(c);
-                        level.numArgs.AddLast(2);
-                        // LinkedList<object> d = new LinkedList<object>();
-                        /**
-                        d.AddLast((int)pos.X);
-                        d.AddLast((int)pos.Y);
-                        /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y };
-                        level.args.AddLast(d);
-                    }
+                    // Mainly inserts object & deletes them===========================
+                    LeftButtonActs(pos);
+                    //================================================================
+
                     // Setting past cursor position to stop redundant "level" modifying
-                    PrevPos = pos; 
+                    PrevPos = OuterPos;
                 }
                 mouseState = state;
             }
         }
+
         private void updateText()
         {
             oldKeyboardState = currentKeyboardState;
@@ -505,6 +600,13 @@ namespace guiCreator
                         if (currentGuiMode == guiMode.Save)
                         {
                             saveGui(fileName);
+
+                            // Writes names of all levels to a file
+                            // See if same value exist & copy it
+                            if (!LevelNames.Contains(fileName))
+                            {
+                                SaveLevelList(fileName);
+                            }
                         }
                         if (currentGuiMode == guiMode.Load)
                         {
@@ -517,9 +619,21 @@ namespace guiCreator
                                 Process.Start("Game.exe", fileName);
                             }
                         }
-                        hFileName = "";
-                        fileName = "";
+                        // Tells "Game.exe" to open "AllLevels"
+                        if (currentGuiMode == guiMode.PlayCreatedLevels)
+                            Process.Start("Game.exe", "AllLevels"); 
+
+                        if (currentGuiMode == guiMode.EditGuiObject)
+                        {
+                                // code to do things with spawner's data
+                            EditEnemySpawn(fileName);
+                            mSprite.LoadContent(this.Content, "Block"); 
+                            
+                        }
+                        //hFileName = "";
+                        //fileName = "";
                         currentGuiMode = guiMode.Edit;
+                        currentGuiObject = guiObject.Block; 
                     }
                     else if (key == Keys.D0)
                         fileName += "0";
@@ -546,6 +660,7 @@ namespace guiCreator
                 }
             }
         }
+
         public void saveGui(string fileName)
         {
             if ((fileName != null)&&(!fileName.Equals("")))
@@ -636,9 +751,8 @@ namespace guiCreator
                 // Closing File & Write streams
                 SWA.Close();
                 FSA.Close(); 
-            }
+            } 
         }
-
         public void loadGui(string fileName)
         {
             if (File.Exists(fileName))
@@ -647,38 +761,6 @@ namespace guiCreator
                 level.data = new LinkedList<Sprite>();
                 level.numArgs = new LinkedList<int>();
                 level.args = new LinkedList<object[]>();
-                
-                /*FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
-                string type;
-                int numArgs;
-                Type argType;
-                object[] args;
-                LinkedList<object> llArgs;
-                string data = sr.ReadLine();
-                while (data != null)
-                {
-                    type = data;
-                    data = sr.ReadLine();
-                    numArgs = Convert.ToInt32(data);
-                    args = new object[numArgs];
-                    llArgs = new LinkedList<object>();
-                    data = sr.ReadLine();
-                    for (int i = 0; i < numArgs; i++)
-                    {
-                        argType = Type.GetType(data);
-                        data = sr.ReadLine();
-                        args[i] = data;
-                        args[i] = Convert.ChangeType(args[i], argType);
-                        llArgs.AddLast(args[i]);
-                        data = sr.ReadLine();
-                    }
-                    //level.args.AddLast(llArgs);
-                    Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(type), args);
-                    a.LoadContent(this.Content);
-                    level.data.AddLast(a);
-                    //level.numArgs.AddLast(numArgs);
-                }*/
                 /*----------FUNC KEY---------
                  * STM = Stream
                  * ARG = Argument
@@ -688,7 +770,7 @@ namespace guiCreator
                  * SPR = Sprite
                  * REP = Representate/Representation
                  * DSPROBJ = Derived Sprite Object
-                             */
+                 */
 
                 // STMs for File & Reading. FileSTM opens the "fileName" file located here
                 // "angelattack\guiCreator\bin\x86\Debug" And ReadSTM reads from that file.
@@ -696,6 +778,7 @@ namespace guiCreator
                 StreamReader SR = new StreamReader(FS);
 
                 string SpriteTypeData = SR.ReadLine();      // Gets the SPROBJ for the ARGs
+                
                 // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
                 // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
                 string[] FileLine = SR.ReadLine().Split(new char[] { ' ' });
@@ -777,6 +860,120 @@ namespace guiCreator
                 FS.Close();
             }
         }
+        
+        // Saves a List of levels
+        public void SaveLevelList(string fileName)
+        {
+            // The count of levels to play
+            if(LevelNames.Count > 0)
+                LevelNames.RemoveFirst();
+
+            int ArrayCount = LevelNames.Count + 1; // Count of Levels created
+            LevelNames.AddFirst(ArrayCount.ToString()); 
+
+            // Adding new node
+            LevelNames.AddLast(fileName); 
+
+            // New streams one to write too & one to do writing
+            FileStream FSA = new FileStream("AllLevels", FileMode.Create, FileAccess.Write);
+            StreamWriter SWA = new StreamWriter(FSA);
+
+            // Iterate through LevelName's Nodes
+            LinkedListNode<string> LevelNameSingle = LevelNames.First; 
+
+            // Keep Writing till there's no more levels!
+            while (LevelNameSingle != null)
+            {
+                SWA.WriteLine(LevelNameSingle.Value);
+                LevelNameSingle = LevelNameSingle.Next; 
+            }
+            // Gotta close the streams
+            SWA.Close();
+            FSA.Close(); 
+        }
+        public void LoadLevelList()
+        {
+            // Load only when this file exists
+            if (File.Exists("AllLevels"))
+            {
+                // Streams read lines from the "AllLevels" file
+                FileStream FS = new FileStream("AllLevels", FileMode.Open, FileAccess.Read);
+                StreamReader SR = new StreamReader(FS);
+
+                // Keeps 1 line of text from file
+                string TextLine;
+
+                // Only do when there is data is to read!
+                while (SR.Peek() != -1)
+                {
+                    // Just Adding names of all levels from "AllLevel" file
+                    TextLine = SR.ReadLine();
+                    LevelNames.AddLast(TextLine);
+                }
+                // Gotta close my streams
+                SR.Close();
+                FS.Close();
+            }
+        }
+
+        // Edits enemy count of a spawner
+        public void EditEnemySpawn(string EnemyCount)
+        {
+            // Get copy of Spawner
+            Spawner SpawnCopy = (Spawner)mSprite; 
+            SpawnCopy.LoadContent(this.Content, "Spawner"); 
+
+            int NumeralEnemyCount;  // Stores string val as int
+            int SpriteIndex = 0;    // Where Spawn mSprite is located in List
+            object[] Arguments;     // Arguments to Spawner
+
+            // Finding where mSprite is located in list
+            foreach (Sprite SpriteObject in level.data)
+            {
+                // When current index is not correct increase it
+                if (SpriteObject != mSprite)
+                    ++SpriteIndex;
+                else
+                {
+                    level.data.Remove(level.data.ElementAt(SpriteIndex));
+                    level.args.Remove(level.args.ElementAt(SpriteIndex));
+                    level.numArgs.Remove(level.numArgs.ElementAt(SpriteIndex));
+                    break;
+                }
+
+            }
+
+            // Knowing the Index I can use this to remove from LevelData struct
+            Debug.WriteLine("Sprite Index is " + SpriteIndex);
+            Debug.WriteLine("Size of level.data is " + level.data.Count); 
+            
+
+            // Initialize count to spawner copy and add new & remove old spawn.
+            if (Int32.TryParse(EnemyCount, out NumeralEnemyCount))
+            {
+                // Updating LevelData struct
+                Spawner NewSpawner = new Spawner((int)SpawnCopy.sArgs[0],
+                  (int)SpawnCopy.sArgs[1], SpawnCopy.spawnDelay, SpawnCopy.sType,
+                  (int)SpawnCopy.sArgs[2], SpawnCopy.AssetName, NumeralEnemyCount);
+
+                NewSpawner.LoadContent(this.Content, "Spawner"); 
+
+                Arguments = new object[]{SpawnCopy.sArgs[0], SpawnCopy.sArgs[1], 
+                                         SpawnCopy.spawnDelay, SpawnCopy.sType, 
+                                         SpawnCopy.sArgs[2], SpawnCopy.AssetName,
+                                         NumeralEnemyCount};
+                
+                level.args.AddLast(Arguments);
+                level.data.AddLast(NewSpawner);
+                level.numArgs.AddLast(8); 
+
+                hFileName = "Successful!";
+            }
+            else 
+                hFileName = "It Failed! :(";
+
+            mSprite.LoadContent(this.Content, "Block"); 
+        }
 
         public Vector2 handleMouse(Vector2 pos)
         {
@@ -801,9 +998,9 @@ namespace guiCreator
         {
             
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            BackGround.Draw(this.spriteBatch, camera); 
             foreach (Sprite n in level.data)
             {
                 n.Draw(this.spriteBatch, camera);
@@ -812,8 +1009,17 @@ namespace guiCreator
             {
                 mSprite.Draw(this.spriteBatch);
             }
-            if ((currentGuiMode == guiMode.Load) || (currentGuiMode == guiMode.Save) || (currentGuiMode == guiMode.Test))
+            if ((currentGuiMode == guiMode.Load) || 
+                (currentGuiMode == guiMode.Save) || 
+                (currentGuiMode == guiMode.Test) ||
+                (currentGuiMode == guiMode.PlayCreatedLevels))
             {
+                header.DrawText(this.spriteBatch, hFileName);
+                text.DrawText(this.spriteBatch, fileName);
+            }
+            if (currentGuiMode == guiMode.EditGuiObject)
+            {
+                mSprite.Draw(this.spriteBatch);
                 header.DrawText(this.spriteBatch, hFileName);
                 text.DrawText(this.spriteBatch, fileName);
             }

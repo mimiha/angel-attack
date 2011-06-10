@@ -1,0 +1,52 @@
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 280
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 320
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 360
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 400
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 440
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 640 280 5000
+System.String guiCreator.LesserDemon
+System.Int32 1
+guiCreator.Spawner
+Argument Length = 5
+System.Int32 600 280 5000
+System.String guiCreator.LesserDemon
+System.Int32 1
+guiCreator.Block
+Argument Length = 2
+System.Int32 400 200
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 200
+guiCreator.Block
+Argument Length = 2
+System.Int32 400 200
+guiCreator.Protectee
+Argument Length = 2
+System.Int32 440 200
+guiCreator.Protectee
+Argument Length = 2
+System.Int32 400 200
+guiCreator.Block
+Argument Length = 2
+System.Int32 520 80
+guiCreator.Block
+Argument Length = 2
+System.Int32 560 80
+guiCreator.Block
+Argument Length = 2
+System.Int32 600 80
+guiCreator.Block
+Argument Length = 2
+System.Int32 640 80
