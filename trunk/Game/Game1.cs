@@ -50,6 +50,7 @@ namespace guiCreator
         int TotalSpawner = 0;
 
         bool DrawComplete = false;
+        bool SingleLoad = false; 
         // Iterates through the "AllLevel" file to get a levelname
         int ActiveLevel = 0;
 
@@ -97,8 +98,8 @@ namespace guiCreator
             string[] commandArgs = Environment.GetCommandLineArgs();
             if (commandArgs.Length > 1)
             {
-                string fileName = "test";
-                if (File.Exists(fileName))
+                string fileName = commandArgs[1];
+                if (File.Exists(fileName) && fileName != "AllLevels" )
                 {
                     /*----------FUNC KEY---------
                      * STM = Stream
@@ -194,6 +195,9 @@ namespace guiCreator
 
                         // Stores 1 piece of the level. 
                         currentLevel.AddLast(SpriteInstance);
+
+                        // Stops going through mulitple levels
+                        SingleLoad = true; 
                     }
                     // Closing up the streams when file is done being read from. 
                     SR.Close();
@@ -201,7 +205,9 @@ namespace guiCreator
                 }
                 else
                 {
-                    this.Exit();
+                    LoadLevelList();
+                    loadGui(LevelNames[ActiveLevel]);
+                    //this.Exit();
                 }
             }
             else
@@ -394,7 +400,7 @@ namespace guiCreator
             // you've won the level!
             
             if ((DoneSpawner == TotalSpawner) && (DemonExists == false) &&
-                (DrawComplete == true))
+                (DrawComplete == true) && (SingleLoad == false))
             {
                 if(ActiveLevel > 0)
                 MessageBox(new IntPtr(0), "You have destroyed your enemies! ",
