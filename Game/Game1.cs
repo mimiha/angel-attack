@@ -47,7 +47,14 @@ namespace guiCreator
 
         // Track non-active & total Spawners
         int DoneSpawner = 0;
-        int TotalSpawner = 0; 
+        int TotalSpawner = 0;
+
+        bool DrawComplete = false;
+        // Iterates through the "AllLevel" file to get a levelname
+        int ActiveLevel = 0;
+
+        // Name of level, used by "LoadContent()"
+        string[] LevelNames; 
 
         /*
          * The Gamer Services functionality must be initialized before you call this method. 
@@ -87,9 +94,9 @@ namespace guiCreator
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             // TODO: use this.Content to load your game content here
-            /*string[] commandArgs = Environment.GetCommandLineArgs();
+            string[] commandArgs = Environment.GetCommandLineArgs();
             if (commandArgs.Length > 1)
-            {*/
+            {
                 string fileName = "test";
                 if (File.Exists(fileName))
                 {
@@ -196,11 +203,136 @@ namespace guiCreator
                 {
                     this.Exit();
                 }
-            /*}
+            }
             else
             {
-                this.Exit();
-            }*/
+                LoadLevelList();
+                loadGui(LevelNames[ActiveLevel]);
+                //LevelNames = new string[ActiveLevel];
+                //this.Exit();
+            }
+        }
+
+        // Loads a list of levels
+        public void LoadLevelList()
+        {
+            // Load only when this file exists
+            if (File.Exists("AllLevels"))
+            {
+                // Streams read lines from the "AllLevels" file
+                FileStream FS = new FileStream("AllLevels", FileMode.Open, FileAccess.Read);
+                StreamReader SR = new StreamReader(FS);
+
+                string TextLine; // Keeps 1 line of text from file
+
+                int Iterator = 0; // Iterates through LevelNames
+
+                // Get the count of levels to load & use to initialize array
+                TextLine = SR.ReadLine();
+                LevelNames = new string[Convert.ToInt32(TextLine)];
+
+                // Only do when there is data is to read!
+                while (SR.Peek() != -1)
+                {
+                    // Just Adding names of all levels from "AllLevel" file
+                    TextLine = SR.ReadLine();
+                    LevelNames[Iterator] = TextLine.ToString();
+                    ++Iterator;
+                }
+                // Gotta close my streams
+                SR.Close();
+                FS.Close();
+            }
+        }
+
+        // This loads a level from the list
+        public void loadGui(string fileName)
+        {
+            TotalSpawner = 0; // Initialize to default
+            // Anything with = between it is an example of what val might be. 
+            // ## = Numbers, ?? = Unknown values, TT = TypeName
+            if (File.Exists(fileName))
+            {
+                /*Opens & ena-*/
+                FileStream FS = new FileStream(fileName, FileMode.Open,
+                    /*bles reading*/FileAccess.Read); // to file
+                /*Reader is*/
+                StreamReader SR = new StreamReader(FS); // Connected to this file
+
+                /*STD = */
+                string SpriteTypeData = SR.ReadLine(); /*guiCreator.Block*/
+
+                // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
+                // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
+                string[] FileLine;
+
+                if (SR.Peek() != -1) /*See if Data exists*/
+                    FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                else
+                    FileLine = new string[5];
+                object[] ArgumentValues;                    // Stores SPROBJ ARG values
+
+                // Needed for loop control, ARY initialization & ARY iteration 
+                int ArgumentLength = 0;
+                int Iterator1 = 0;
+
+                /*Stores info*/
+                Type ArgumentType; // needed to convert ARGs vals to their types
+
+                currentLevel = new LinkedList<Sprite>(); // Cleans currentLevel
+
+                // ALL RIGHT! Main loop!!! Below an example of what's read from file
+                // guiCreator.Block
+                // Argument Length = 2
+                // System.Int32 680 320
+                while (SR.Peek() != -1) // Check for text to read from file
+                {
+                    // Then allocating ARY to store them
+                    /*FL[3] = 3 type*/
+                    ArgumentLength = Convert.ToInt32(FileLine[3]); /*info uneeded*/
+                    /*AV array size*/
+                    ArgumentValues = new object[ArgumentLength]; /* is 3 now*/
+
+                    if (SpriteTypeData == "guiCreator.Spawner")
+                        ++TotalSpawner; // Count up sprites
+
+                    /*Read & convert*/
+                    while (Iterator1 < ArgumentLength) //Args to create sprite obj
+                    {
+                        /*System32.Int32 ## ##*/
+                        FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                        /*FL[0]=System32.Int32*/
+                        ArgumentType = Type.GetType(FileLine[0]); /*Make type name*/
+
+                        foreach (string S in FileLine) // Iterate string elements
+                            if (S != FileLine[0]) // No Convert on 1st element
+                            {
+                                /*AV[0] = TT*/
+                                ArgumentValues[Iterator1] = Convert.ChangeType(S, ArgumentType);
+                                /*TT is System.Int32*/
+                                ++Iterator1;
+                            }
+                    }
+
+                    // The Sprite object now exists! ARGs assigned to a DRSPROBJ & drawn to screen.
+                    Sprite SpriteInstance = (Sprite)Activator.CreateInstance
+                                            (Type.GetType(SpriteTypeData), ArgumentValues);
+                    SpriteInstance.LoadContent(this.Content);
+
+                    if (SR.Peek() != -1) // Check existence of more data ahead
+                    {
+                        /*ARGs done, Sprite*/
+                        SpriteTypeData = SR.ReadLine(); /*typename is next*/
+                        FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                    }
+
+                    Iterator1 = 0;  // Reset ARG iterator
+
+                    currentLevel.AddLast(SpriteInstance); // Add sprite data
+                }
+                SR.Close(); // Close Streamreader
+                FS.Close(); // Close FileReader
+            }
         }
 
         /// <summary>
@@ -220,6 +352,7 @@ namespace guiCreator
         protected override void Update(GameTime gameTime)
         {
             KeyboardState state = Keyboard.GetState();
+            
             // Allows the game to exit
             if (state.IsKeyDown(Keys.Escape) == true)
                 this.Exit();
@@ -251,21 +384,36 @@ namespace guiCreator
                 n = n.Next;
             }
 
-            if (!baseExists)
+            if (!baseExists && (DrawComplete == true))
             {
                 MessageBox(new IntPtr(0), "Game Over!", "Angel Attack", 0);
                 this.Exit();
             }
-            
+
             // When all Spawners are done & no more enemies to beat 
             // you've won the level!
-            if ((DoneSpawner == TotalSpawner)&&(DemonExists == false))
+            
+            if ((DoneSpawner == TotalSpawner) && (DemonExists == false) &&
+                (DrawComplete == true))
             {
-                MessageBox(new IntPtr(0), "You have destroyed your enemies!",
+                if(ActiveLevel > 0)
+                MessageBox(new IntPtr(0), "You have destroyed your enemies! ",
                            "Angel Attack", 0);
-                this.Exit();
+                
+                if (ActiveLevel != LevelNames.Count())//Load if more levels exist
+                {
+                    loadGui(LevelNames[ActiveLevel]);
+                    ++ActiveLevel;
+                }
+                else
+                {
+                    MessageBox(new IntPtr(0), "Exiting now! ",
+                           "Angel Attack", 0);
+                    this.Exit();
+                }
+                DrawComplete = false; 
             }
-
+            
             DoneSpawner = 0;
 
             base.Update(gameTime);
@@ -286,7 +434,9 @@ namespace guiCreator
             {
                 n.Draw(this.spriteBatch);
             }
+            
             spriteBatch.End();
+            DrawComplete = true; 
 
             base.Draw(gameTime);
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using System.Diagnostics; 
 namespace guiCreator
 {
     public class Effect : Sprite
@@ -64,6 +64,8 @@ namespace guiCreator
 
                 updateAnimation(theGameTime, theContentManager);
             }
+            if (frameIndex == 8)
+                level.Remove(this); 
             return level;
         }
 
@@ -76,6 +78,7 @@ namespace guiCreator
 
             // Process passing time.
             time += (float)theGameTime.ElapsedGameTime.TotalSeconds;
+            
             while (time > FRAME_TIME)
             {
                 time -= FRAME_TIME;

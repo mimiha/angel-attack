@@ -451,6 +451,7 @@ namespace guiCreator
                 mouseState = state;
             }
         }
+
         private void updateText()
         {
             oldKeyboardState = currentKeyboardState;

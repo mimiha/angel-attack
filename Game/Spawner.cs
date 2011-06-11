@@ -13,13 +13,13 @@ namespace guiCreator
 {
     public class Spawner : Sprite
     {
-        const string ASSETNAME = "Spawner";
+        string ASSETNAME = "Spawner";
         string sType;
         object[] sArgs;
         int elapsed = 0;
         int spawnDelay = 100;
         
-        int DemonCount = 1;        // The Number of demons comming from This Spawner!
+        int DemonCount = 0;        // The Number of demons comming from This Spawner!
 
         public Spawner(int startX, int startY, int delay, string type, int direction) : base(startX, startY)
         { 
@@ -36,6 +36,19 @@ namespace guiCreator
             sType = type;
             sArgs = new object[] { startX, startY, direction };
             DemonCount = DemonNumber; 
+        }
+
+        // My Spawner initializer
+        public Spawner(int startX, int startY, int delay, string type,
+                       int direction, string ASSETFILE, int EnemyNumber)
+            : base(startX, startY)
+        {
+            // The new graphic displayed is this
+            ASSETNAME = ASSETFILE;
+            DemonCount = EnemyNumber;
+            spawnDelay = delay;
+            sType = type;
+            sArgs = new object[] { startX, startY, direction };
         }
 
         public override void LoadContent(ContentManager theContentManager)

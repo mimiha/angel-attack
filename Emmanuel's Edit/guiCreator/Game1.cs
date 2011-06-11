@@ -201,7 +201,7 @@ namespace guiCreator
                 fileName = "";
                 level.data = new LinkedList<Sprite>();
                 level.numArgs = new LinkedList<int>();
-                level.args = new LinkedList<object[]>();
+                level.args = new LinkedList<LinkedList<object>>();
             }
             if (keyState.IsKeyDown(Keys.F2) == true)
             {
@@ -215,12 +215,9 @@ namespace guiCreator
                 hFileName = "Save As: ";
                 fileName = "";
             }
-            // So yeah I don't know about what I'm supposed to do with this LinkedList(LL)
-            // Might spew out a bunch of LL data. Please add by comments what exactly needs
-            // to be done
             if (keyState.IsKeyDown(Keys.F4) == true)
             {
-                currentGuiMode = guiMode.LinkListManage;
+                currentGuiMode = guiMode.LinkManage;
             }
             if (keyState.IsKeyDown(Keys.F10) == true)
             {
@@ -231,29 +228,26 @@ namespace guiCreator
             if (keyState.IsKeyDown(Keys.F12) == true)
             {
                 MessageBox(new IntPtr(0),
-                    "Special Keys / Functions\n" +
-                    "====================\n" +
+                    "Special Keys / Functions\n====================\n" +
                     "F1 = New Level\n" +
-                    "F2 = Load Level\n" + 
+                    "F2 = Load Level\n" +
                     "F3 = Save Level\n" +
-                    "F10 = Test Level\n" + 
+                    "F10 = Test Level\n" +
                     "F12 = Help\n" +
-                    "Delete = Delete Mode\n\n" +
-                    "Blocks\n" +
-                    "====================\n" +
+                    "Delete = Delete Mode\n" +
+                    "\nBlocks\n====================\n" +
                     "Q = Regular Block\n" +
                     "W = Wall\n" +
                     "E = Protectee\n\n" +
                     "Enemies / Players\n" +
                     "====================\n" +
-                    "A = Grenadier\n" + 
+                    "A = Grenadier\n" +
                     "S = Average Joe (moving left)\n" +
-                    "D = Average Joe (moving right)\n\n" +
-                    "Spawners\n" + 
+                    "D = Average Joe (moving right)\n" +
+                    "\nSpawners\n" +
                     "====================\n" +
                     "Z = Average Joe Spawner (moving left)\n" +
-                    "X = Average Joe Spawner (moving right)"
-                    , "Help", 0);
+                    "X = Average Joe Spawner (moving right)", "Help", 0);
             }
             if (keyState.IsKeyDown(Keys.Escape) == true)
             {
@@ -270,27 +264,11 @@ namespace guiCreator
                 pos = handleMouse(pos);
                 mSprite.drawPosition = pos;
                 pos += camera;
-
                 if (keyState.IsKeyDown(Keys.Delete) == true)
                 {
                     mSprite.LoadContent(this.Content, "Delete");
                     currentGuiObject = guiObject.Delete;
                 }
-                
-                // To set the Spawner's spawn limits
-                if (keyState.IsKeyDown(Keys.LeftAlt) == true)
-                {
-                    mSprite.LoadContent(this.Content, "SetSpawn");
-                    currentGuiObject = guiObject.SetSpawner;
-                }
-
-                // To get the information of object in LinkedList
-                if (keyState.IsKeyDown(Keys.RightAlt) == true)
-                {
-                    mSprite.LoadContent(this.Content, "GetSpriteInfo");
-                    currentGuiObject = guiObject.ObjectInfo;
-                }
-
                 if (keyState.IsKeyDown(Keys.Q) == true)
                 {
                     mSprite.LoadContent(this.Content, "Block");
@@ -318,12 +296,12 @@ namespace guiCreator
                 }
                 if (keyState.IsKeyDown(Keys.Z) == true)
                 {
-                    mSprite.LoadContent(this.Content, "Spawner_Left");
+                    mSprite.LoadContent(this.Content, "Spawner");
                     currentGuiObject = guiObject.SpawnerLeft;
                 }
                 if (keyState.IsKeyDown(Keys.X) == true)
                 {
-                    mSprite.LoadContent(this.Content, "Spawner_Right");
+                    mSprite.LoadContent(this.Content, "Spawner");
                     currentGuiObject = guiObject.SpawnerRight;
                 }
                 if (keyState.IsKeyDown(Keys.E) == true)
@@ -331,14 +309,13 @@ namespace guiCreator
                     mSprite.LoadContent(this.Content, "Protectee");
                     currentGuiObject = guiObject.Protectee;
                 }
-
-                if ((state.LeftButton == ButtonState.Pressed))
+                if ((mouseState.LeftButton == ButtonState.Released) && (state.LeftButton == ButtonState.Pressed))
                 {
                     if (currentGuiObject == guiObject.Delete)
                     {
                         LinkedListNode<Sprite> n = level.data.First;
                         LinkedListNode<int> m = level.numArgs.First;
-                        LinkedListNode<object[]> o = level.args.First;
+                        LinkedListNode<LinkedList<object>> o = level.args.First;
                         while (n != null)
                         {
                             if (((pos.X + 20) > n.Value.Position.X) && ((pos.X + 20) < (n.Value.Position.X + n.Value.Size.Right)) && ((pos.Y + 20) > n.Value.Position.Y) && ((pos.Y + 20) < (n.Value.Position.Y + n.Value.Size.Bottom)))
@@ -356,89 +333,39 @@ namespace guiCreator
                             }
                         }
                     }
-                    // Mode to set Spawner Limits
-                    if (currentGuiObject == guiObject.SetSpawner)
-                    { 
-                        // Code to set the specified spawner's spawn value
-                    }
-
-                    // The information from a Gui object
-                    if (currentGuiObject == guiObject.ObjectInfo)
-                    {
-                        // This will store what piece in the level is being highlighted
-                        Sprite LevelObject;
-                        
-                        Debug.WriteLine("The X Cordinate is" + pos.X);
-                        Debug.WriteLine("The Y Cordinate is" + pos.Y);
-                        Debug.WriteLine("LinkedList Size is " + level.data.Count);
-
-                        // Get the Sprite that's located at this position
-                        LevelObject = level.data.LastOrDefault(LevelY => LevelY.Position == pos);
-                        SpriteTextLocation = new Text[3];
-                        SpriteInformation = new string[3];
-
-                        if (LevelObject != null)
-                        {
-                            SpriteInformation[0] = LevelObject.Position.X.ToString();
-                            SpriteInformation[1] = LevelObject.Position.Y.ToString();
-                            SpriteInformation[2] = LevelObject.GetType().ToString();
-                        }
-                        else
-                        {
-                            SpriteInformation[0] = "Empty!";
-                            SpriteInformation[1] = "Empty!";
-                            SpriteInformation[2] = "Empty!";
-                        }
-
-                        if (level.data.Contains(LevelObject) && (level.data.Count() != 0))
-                            Debug.WriteLine("Hello World!"); 
-                    }
-                    if (currentGuiObject == guiObject.Block && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Block)
                     {
                         Block c = new Block((int)pos.X, (int)pos.Y);
-
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-
                         c.LoadContent(this.Content);
-
                         level.data.AddLast(c);
-                        level.numArgs.AddLast(2);
+                        // level.numArgs.AddLast(2);
                         /**
-                        /LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);/**/
+
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
-                        level.args.AddLast(d); 
                     }
-                    if (currentGuiObject == guiObject.Wall && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Wall)
                     {
                         Wall c = new Wall((int)pos.X, (int)pos.Y);
-
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-
                         c.LoadContent(this.Content);
-                        
                         level.data.AddLast(c);
                         level.numArgs.AddLast(2);
-                        //LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y); /**/
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.Player && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Player)
                     {
                         Grenadier c = new Grenadier((int)pos.X, (int)pos.Y, 512, 384);
                         c.LoadContent(this.Content);
-
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-                        
                         level.data.AddLast(c);
-                        
                         level.numArgs.AddLast(4);
-                        //LinkedList<object> d = new LinkedList<object>();
-                        //object[] d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -447,16 +374,13 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeLeft && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.AverageJoeLeft)
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
                         c.LoadContent(this.Content);
-                        
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-                        
                         level.data.AddLast(c);
                         level.numArgs.AddLast(3);
-                        //LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -464,16 +388,13 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)-1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeRight && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.AverageJoeRight)
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
                         c.LoadContent(this.Content);
-                        
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-                        
                         level.data.AddLast(c);
                         level.numArgs.AddLast(3);
-                        //LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -482,16 +403,13 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.SpawnerLeft && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.SpawnerLeft)
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1, "Spawner_Left");
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", -1);
                         c.LoadContent(this.Content);
-                        
-                        c.SETSPRITEINDEX = level.data.Count(); // Setting Index Value for Sprite Object
-                        
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
-                        //LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -499,16 +417,16 @@ namespace guiCreator
                         d.AddLast("guiCreator.LesserDemon");
                         d.AddLast((int)-1);
                         /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)-1 };
+                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, (int)-1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.SpawnerRight && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.SpawnerRight)
                     {
-                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1, "Spawner_Right");
+                        Spawner c = new Spawner((int)pos.X, (int)pos.Y, 5000, "guiCreator.LesserDemon", 1);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(5);
-                        //LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -516,16 +434,16 @@ namespace guiCreator
                         d.AddLast("guiCreator.LesserDemon");
                         d.AddLast((int)1);
                         /**/
-                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon", (int)1};
+                        object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)5000, "guiCreator.LesserDemon" };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.Protectee && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.Protectee)
                     {
                         Protectee c = new Protectee((int)pos.X, (int)pos.Y);
                         c.LoadContent(this.Content);
                         level.data.AddLast(c);
                         level.numArgs.AddLast(2);
-                        // LinkedList<object> d = new LinkedList<object>();
+                        LinkedList<object> d = new LinkedList<object>();
                         /**
                         d.AddLast((int)pos.X);
                         d.AddLast((int)pos.Y);
@@ -533,9 +451,6 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y };
                         level.args.AddLast(d);
                     }
-
-                    // Setting past cursor position to stop redundant "level" modifying
-                    PrevPos = pos; 
                 }
                 mouseState = state;
             }
