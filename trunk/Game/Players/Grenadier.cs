@@ -168,8 +168,6 @@ namespace guiCreator
             return level;
         }
 
-
-
         public void handleInput(LinkedList<Sprite> level, ContentManager theContentManager)
         {
             KeyboardState aCurrentKeyboardState = Keyboard.GetState();
@@ -350,10 +348,6 @@ namespace guiCreator
             mPreviousKeyboardState = aCurrentKeyboardState;
         }
 
-
-
-
-
         public void updateAnimation(GameTime theGameTime, ContentManager theContentManager)
         {
             if (animation == null)
@@ -378,9 +372,6 @@ namespace guiCreator
             mSpriteTexture = theContentManager.Load<Texture2D>(animation + frameIndex);
         }
 
-
-
-
         public void PlayAnimation(string anim, int fCount, bool loop)
         {
             // If this animation is already running, do not restart it.
@@ -394,9 +385,6 @@ namespace guiCreator
             this.frameIndex = 0;
             this.time = 0.0f;
         }
-
-
-
 
         public LinkedList<Sprite> updateAttack(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
         {
@@ -452,11 +440,6 @@ namespace guiCreator
 
             return level;
         }
-
-
-
-
-
 
         public void applyPhysics(float elapsed, LinkedList<Sprite> level)
         {
@@ -744,8 +727,6 @@ namespace guiCreator
 
             return smallest;
         }
-
-
 
         //=======================================================
         //= Overwritten functions from virtual methods in sprite.

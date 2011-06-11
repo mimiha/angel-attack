@@ -445,7 +445,30 @@ namespace guiCreator
 
             if (currentGuiObject == guiObject.Delete)
             {
-                LinkedListNode<Sprite> n = level.data.First;
+                int SpriteIndex = 0; 
+                mSprite = level.data.LastOrDefault(LevelY => LevelY.drawPosition == pos);
+
+                if (mSprite != null)
+                    foreach (Sprite SpriteObject in level.data)
+                    {
+                        // When current index is not correct increase it
+                        if (SpriteObject != mSprite)
+                            ++SpriteIndex;
+                        else
+                        {
+                            level.data.Remove(level.data.ElementAt(SpriteIndex));
+                            level.args.Remove(level.args.ElementAt(SpriteIndex));
+                            level.numArgs.Remove(level.numArgs.ElementAt(SpriteIndex));
+                            break;
+                        }
+                    }
+                else
+                {
+                    mSprite = new Sprite((int)pos.X, (int)pos.Y); 
+                    mSprite.LoadContent(this.Content, "Delete");
+                }
+
+                /*LinkedListNode<Sprite> n = level.data.First;
                 LinkedListNode<int> m = level.numArgs.First;
                 LinkedListNode<object[]> o = level.args.First;
                 while (n != null)
@@ -463,7 +486,7 @@ namespace guiCreator
                         m = m.Next;
                         o = o.Next;
                     }
-                }
+                }*/
             }
         }
         private void EditGuiActs(Vector2 pos)
@@ -538,7 +561,7 @@ namespace guiCreator
             if ((currentGuiMode == guiMode.Save) || 
                 (currentGuiMode == guiMode.Load) || 
                 (currentGuiMode == guiMode.Test))
-                updateGui();
+                updateText();
 
             if ((currentGuiMode == guiMode.PlayCreatedLevels))
             {
@@ -570,7 +593,7 @@ namespace guiCreator
                     //================================================================
 
                     // Setting past cursor position to stop redundant "level" modifying
-                    PrevPos = OuterPos;
+                    PrevPos = pos; 
                 }
                 mouseState = state;
             }
@@ -998,9 +1021,11 @@ namespace guiCreator
         {
             
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             BackGround.Draw(this.spriteBatch, camera); 
+            
             foreach (Sprite n in level.data)
             {
                 n.Draw(this.spriteBatch, camera);
