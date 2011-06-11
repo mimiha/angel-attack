@@ -1,54 +1,7 @@
-guiCreator.Block
-Argument Length = 2
-System.Int32 320 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 360 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 400 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 440 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 520 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 560 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 600 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 640 360
-guiCreator.Block
-Argument Length = 2
-System.Int32 280 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 680 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 720 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 760 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 800 400
-guiCreator.Protectee
-Argument Length = 2
-System.Int32 520 280
-guiCreator.Block
-Argument Length = 2
-System.Int32 480 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 840 400
-guiCreator.Block
-Argument Length = 2
-System.Int32 880 400
-guiCreator.Grenadier
-Argument Length = 4
-System.Int32 400 320 512 384
+guiCreator.Spawner
+Argument Length = 7
+System.Int32 600 240 5000
+System.String guiCreator.LesserDemon
+System.Int32 -1
+System.String Spawner
+System.Int32 1

@@ -88,7 +88,6 @@ namespace guiCreator
 
         //Sets default object in GUI mode to be the block
         guiObject currentGuiObject = guiObject.Block;
-        guiObject previousGuiObject = guiObject.Block; 
 
         enum guiMode
         {
@@ -623,7 +622,7 @@ namespace guiCreator
                         if (currentGuiMode == guiMode.Save)
                         {
                             saveGui(fileName);
-
+                            mSprite.LoadContent(this.Content, "Block"); 
                             // Writes names of all levels to a file
                             // See if same value exist & copy it
                             if (!LevelNames.Contains(fileName))
@@ -988,7 +987,7 @@ namespace guiCreator
                 
                 level.args.AddLast(Arguments);
                 level.data.AddLast(NewSpawner);
-                level.numArgs.AddLast(8); 
+                level.numArgs.AddLast(7); 
 
                 hFileName = "Successful!";
             }
