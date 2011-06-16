@@ -208,12 +208,7 @@ namespace guiCreator
                 {   // successfully comboed two arrow keys
 
                     if (dashing == false)
-                    {
-                        Effect dashCloud;
-                        dashCloud = new Effect((int)(Position.X + 30), (int)Position.Y, effectName.DASH, sDirection);
-                        dashCloud.LoadContent(theContentManager);
-                        level.AddLast(dashCloud);
-                    }
+                        addEffect(effectName.DASH, ((int)(Position.X) + 30), (int)Position.Y, sDirection, level, theContentManager);
 
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
@@ -230,12 +225,7 @@ namespace guiCreator
                 {   // successfully comboed two arrow keys
 
                     if (dashing == false)
-                    {
-                        Effect dashCloud;
-                        dashCloud = new Effect((int)(Position.X - 80), (int)Position.Y, effectName.DASH, sDirection);
-                        dashCloud.LoadContent(theContentManager);
-                        level.AddLast(dashCloud);
-                    }
+                        addEffect(effectName.DASH, ((int)(Position.X) - 80), (int)Position.Y, sDirection, level, theContentManager);
 
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
@@ -338,6 +328,8 @@ namespace guiCreator
                 {   // Uncloak, but make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
+                        string name = "uncloak";
+                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/uncloak", 15, false);
                         PlayAnimation("Espion/stand", 16, true);
                         facing_back = false;
@@ -348,6 +340,8 @@ namespace guiCreator
                 {   // Prepare for cloak, make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
+                        string name = "cloak";
+                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/cloak", 15, false);
                         PlayAnimation("Espion/cloakstand", 12, true);
                         cloaked = true;
@@ -513,25 +507,17 @@ namespace guiCreator
 
             int snd = 1;    //attacking
             sound.PlayVoice(theContentManager, VOICENUM, snd);
-            snd = 2;    //swinging knife
-            sound.PlayEffect(theContentManager, snd);
+
+            snd = 4;
+            string name = "knife_swing";
+            sound.PlayEffect(theContentManager, name, 4);
 
             //Plays slicing effect
             //Depending on the direction, the effect's position is modified...
             if (sDirection == -1)
-            {
-                Effect e_Slice;
-                e_Slice = new Effect((int)(Position.X) - 35, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
-                e_Slice.LoadContent(theContentManager);
-                level.AddLast(e_Slice);
-            }
+                addEffect(effectName.E_SLICE, ((int)(Position.X) - 35), (int)Position.Y + 30, -sDirection, level, theContentManager);
             else
-            {
-                Effect e_Slice;
-                e_Slice = new Effect((int)(Position.X) - 10, (int)Position.Y + 30, effectName.E_SLICE, -sDirection);
-                e_Slice.LoadContent(theContentManager);
-                level.AddLast(e_Slice);
-            }
+                addEffect(effectName.E_SLICE, ((int)(Position.X) - 10), (int)Position.Y + 30, -sDirection, level, theContentManager);
 
             foreach (Sprite n in level)
             {
@@ -545,14 +531,23 @@ namespace guiCreator
                         if (IntersectBounds(attackBounds, n.rightHitBox))
                         {
                             //Connecting hit
-                            combo++;
+
                             //snd = 2;    //connecting hit
                             //sound.PlayEffect(theContentManager, snd);
-                            if (n.takeDamage(damageCalculation(attack)))
+
+                            int hit = randNum(1, 4);
+                            switch (hit)
                             {
-                                //delete enemy
-                                level.Remove(n);
+                                case 1: addEffect(effectName.HIT_A, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-20, 20))), sDirection, level, theContentManager); break;
+                                case 2: addEffect(effectName.HIT_B, ((int)(n.Position.X - (randNum(5, 20)))), ((int)n.Position.Y - (randNum(-10, 20))), sDirection, level, theContentManager); break;
+                                case 3: addEffect(effectName.HIT_C, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-70, -20))), sDirection, level, theContentManager); break;
+                                default: break;
                             }
+
+                            combo++;
+
+                            if (n.takeDamage(damageCalculation(attack)))
+                                level.Remove(n);
                             break;
                         }
                     }
@@ -561,12 +556,17 @@ namespace guiCreator
                         //facing right
                         if (IntersectBounds(attackBounds, n.sBounds))
                         {
+                            int hit = randNum(1, 4);
+                            switch (hit)
+                            {
+                                case 1: addEffect(effectName.HIT_A, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-20, 20))), sDirection, level, theContentManager); break;
+                                case 2: addEffect(effectName.HIT_B, ((int)(n.Position.X - (randNum(5, 20)))), ((int)n.Position.Y - (randNum(-10, 20))), sDirection, level, theContentManager); break;
+                                case 3: addEffect(effectName.HIT_C, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-70, -20))), sDirection, level, theContentManager); break;
+                                default: break;
+                            }
                             combo++;
                             if (n.takeDamage(damageCalculation(attack)))
-                            {
-                                //delete enemy
                                 level.Remove(n);
-                            }
                             break;
                         }
                     }

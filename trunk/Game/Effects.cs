@@ -32,6 +32,10 @@ namespace guiCreator
                 PlayAnimation("effects/melee/slice", 5, false);
             if (name == effectName.HIT_A)
                 PlayAnimation("effects/melee/hitA", 18, false);
+            if (name == effectName.HIT_B)
+                PlayAnimation("effects/melee/hitB", 8, false);
+            if (name == effectName.HIT_C)
+                PlayAnimation("effects/melee/hitC", 11, false);
         }
 
         public override void LoadContent(ContentManager theContentManager)

@@ -54,6 +54,8 @@ namespace guiCreator
             DASH,
             E_SLICE,
             HIT_A,
+            HIT_B,
+            HIT_C,
             BACKDASH,
             CRITICAL,
         }
@@ -233,6 +235,24 @@ namespace guiCreator
                 rightHitBox = new Rectangle((int)(Position.X + half), (int)Position.Y, (half + 80), (mSpriteTexture.Height - 20));
             else
                 rightHitBox = new Rectangle((int)(Position.X), (int)Position.Y, 1, 1);
+        }
+
+
+        public static int randNum(int min, int max)
+        {
+            Random rndsnd = new Random();
+            int rand = rndsnd.Next(min, max);
+            return rand;
+        }
+
+
+        //Public function for all sprites.
+        public void addEffect(effectName effName, int posX, int posY, int dir, LinkedList<Sprite> level, ContentManager theContentManager)
+        {
+            Effect effect;
+            effect = new Effect(posX, posY, effName, dir);
+            effect.LoadContent(theContentManager);
+            level.AddLast(effect);
         }
 
 
