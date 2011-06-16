@@ -769,7 +769,8 @@ namespace guiCreator
         public override float damageCalculation(float pureAttk)
         {
             // the modifier is BEFORE the critical damage is applied
-            float rand = randNum(-attackMod, attackMod);
+            Random mod = new Random();
+            float rand = mod.Next(-attackMod, attackMod);
             rand /= 10; //we divide it to get a float, what we wanted
             float modDmg = pureAttk * rand;
             pureAttk += modDmg;

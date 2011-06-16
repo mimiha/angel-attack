@@ -47,7 +47,8 @@ namespace guiCreator
         //= Characters have a base attack that all basic attacks leech off of.
         //= Special attacks apply large percentage modifiers to this base attack to calculate damage.
         //======================================
-        float attackSpeed = 200,  // Max amount of miliseconds an attack is in animation
+        float attack = 30,      // amt of damage player does
+            attackSpeed = 200,  // Max amount of miliseconds an attack is in animation
             critChance = 8,     // chance of crit (%)
             critMod = 0,        // adds amount of damage that a crit does (%)
             maxHealth = 70,    // max health available
@@ -819,40 +820,6 @@ namespace guiCreator
 
         public override void Draw(SpriteBatch theSpriteBatch)
         {
-
-            float width = 40;
-            float height = 10;
-
-            // wing behind health bar
-             Vector2 wing_status = new Vector2(-10, 20);
-            theSpriteBatch.Draw(wing, wing_status, null,
-                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0); 
-
-            // HP/MP Bars behind outline
-            Vector2 hp_bar = new Vector2(41, 53);
-            height = 22;
-            width = 127 * (curHealth / maxHealth);
-            theSpriteBatch.Draw(status_hp, hp_bar,
-               new Rectangle(0, 0, (int)width, (int)height),
-               Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
-
-            Vector2 sp_bar = new Vector2(61, 87);
-            width = 127 * (curSpecial / maxSpecial);
-            theSpriteBatch.Draw(status_sp, sp_bar,
-               new Rectangle(0, 0, (int)width, (int)height),
-               Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
-
-            // draw the health bars' outlines
-            Vector2 hpsp_outline = new Vector2(30, 47);
-            theSpriteBatch.Draw(status_hpmp_outline, hpsp_outline, null,
-                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
-
-            // draw the angel's name
-            Vector2 angel_status = new Vector2(0, 0);
-            theSpriteBatch.Draw(status_e, angel_status, null,
-                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
-
-
 
             // drawing the directions
             if (sDirection == (-1))
