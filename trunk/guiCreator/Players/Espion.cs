@@ -47,8 +47,7 @@ namespace guiCreator
         //= Characters have a base attack that all basic attacks leech off of.
         //= Special attacks apply large percentage modifiers to this base attack to calculate damage.
         //======================================
-        float attack = 30,      // amt of damage player does
-            attackSpeed = 200,  // Max amount of miliseconds an attack is in animation
+        float attackSpeed = 200,  // Max amount of miliseconds an attack is in animation
             critChance = 8,     // chance of crit (%)
             critMod = 0,        // adds amount of damage that a crit does (%)
             maxHealth = 70,    // max health available

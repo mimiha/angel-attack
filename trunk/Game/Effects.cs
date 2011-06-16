@@ -9,7 +9,6 @@ namespace guiCreator
     public class Effect : Sprite
     {
         const string ASSETNAME = "effects/default";
-        //const string ASSETNAME = "effects/dash/forward0";
 
         int sDirection, startingX, startingY;
 
@@ -31,6 +30,8 @@ namespace guiCreator
                 PlayAnimation("effects/dash/forward", 9, false);
             if (name == effectName.E_SLICE)
                 PlayAnimation("effects/melee/slice", 5, false);
+            if (name == effectName.HIT_A)
+                PlayAnimation("effects/melee/hitA", 18, false);
         }
 
         public override void LoadContent(ContentManager theContentManager)
@@ -64,7 +65,8 @@ namespace guiCreator
 
                 updateAnimation(theGameTime, theContentManager);
             }
-            if (frameIndex == 8)
+            //end of animation? Delete it!
+            if (frameIndex == frameCount-1)
                 level.Remove(this); 
             return level;
         }
@@ -93,12 +95,6 @@ namespace guiCreator
                     frameIndex = Math.Min(frameIndex + 1, frameCount - 1);
                 }
             }
-            /*
-            // is the end of the animations here...
-            if (frameIndex == frameCount)
-            {
-
-            }*/
             mSpriteTexture = theContentManager.Load<Texture2D>(animation + frameIndex);
         }
 

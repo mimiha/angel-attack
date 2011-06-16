@@ -96,6 +96,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protectee.cs" />
+    <Compile Include="Sound.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Text.cs" />

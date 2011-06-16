@@ -10,7 +10,7 @@ namespace guiCreator
 {
     public class LesserDemon : Sprite
     {
-        const string ASSETNAME = "AverageJoe/aj_run0";
+        const string ASSETNAME = "LesserDemon/run0";
         Vector2 velocity;
         int sDirection;
         Texture2D healthGreen;
@@ -197,11 +197,11 @@ namespace guiCreator
             {
                 elapsedAttack = 0;
                 elapsedAttackAnimation++;
-                PlayAnimation("AverageJoe/aj_atk", 7, true);
+                PlayAnimation("LesserDemon/attack", 9, true);
             }
             else
             {
-                PlayAnimation("AverageJoe/aj_run", 15, true);
+                PlayAnimation("LesserDemon/run", 14, true);
             }
             return level;
         }
