@@ -42,17 +42,21 @@ namespace guiCreator
         //The amount to increase/decrease the size of the original sprite. 
         public float mScale = 1.0f;
 
-        public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
+        //the x amount of how much a critical does. 
+        //It's universal and shared by all sprites.
+        public const float CRITICAL_DAMAGE = 1.5f;  
 
         // The Flag to stop enemies from Spawning!!!
-        public bool DoneSpawning = false;  
-        
+        public bool DoneSpawning = false;
+
+        //Effects. Needs to be shared by all sprites.
         public enum effectName
         {
             DEFAULT,
             DASH,
-            E_SLICE,
             BACKDASH,
+            HIT_A,
+            E_SLICE,
             CRITICAL,
         }
 
@@ -232,6 +236,15 @@ namespace guiCreator
             else
                 rightHitBox = new Rectangle((int)(Position.X), (int)Position.Y, 1, 1);
         }
+
+
+        public static int randNum(int min, int max)
+        {
+            Random rndsnd = new Random();
+            int rand = rndsnd.Next(min, max);
+            return rand;
+        }
+
 
 
         //======================================

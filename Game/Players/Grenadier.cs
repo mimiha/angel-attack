@@ -19,6 +19,7 @@ namespace guiCreator
 
         // Text to display number of bullets
         Text hudBullets;
+        Text hudCombos;
         Texture2D reloadBackground;
         Texture2D reloadFill;
 
@@ -66,7 +67,7 @@ namespace guiCreator
             defense = 20,       // damage reduced (%) from basic attacks
             range = 300;        // range in pixels of bullets before they disappear
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
-        //int combo = 0;          // combo counter
+        int combo = 0;          // combo counter
 
 
         // Attacking variables for the sprite
@@ -132,6 +133,7 @@ namespace guiCreator
         {
             screenPos = new Vector2(screenPosX, screenPosY);
             hudBullets = new Text(10, 120);
+            hudCombos = new Text(10, 160);
             PlayAnimation("Grenadier/Stand", 16, true);
         }
 
@@ -140,6 +142,7 @@ namespace guiCreator
             velocity = Vector2.Zero;
             base.LoadContent(theContentManager, ASSETNAME);
             hudBullets.LoadContent(theContentManager, "Font");
+            hudCombos.LoadContent(theContentManager, "Font");
             reloadBackground = theContentManager.Load<Texture2D>("UI/ReloadBackground");
             reloadFill = theContentManager.Load<Texture2D>("UI/ReloadFill");
             status_hpmp_outline = theContentManager.Load<Texture2D>("UI/status_hpmp_outline");
@@ -167,6 +170,8 @@ namespace guiCreator
             }
             return level;
         }
+
+
 
         public void handleInput(LinkedList<Sprite> level, ContentManager theContentManager)
         {
@@ -348,6 +353,10 @@ namespace guiCreator
             mPreviousKeyboardState = aCurrentKeyboardState;
         }
 
+
+
+
+
         public void updateAnimation(GameTime theGameTime, ContentManager theContentManager)
         {
             if (animation == null)
@@ -372,6 +381,9 @@ namespace guiCreator
             mSpriteTexture = theContentManager.Load<Texture2D>(animation + frameIndex);
         }
 
+
+
+
         public void PlayAnimation(string anim, int fCount, bool loop)
         {
             // If this animation is already running, do not restart it.
@@ -385,6 +397,9 @@ namespace guiCreator
             this.frameIndex = 0;
             this.time = 0.0f;
         }
+
+
+
 
         public LinkedList<Sprite> updateAttack(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
         {
@@ -440,6 +455,11 @@ namespace guiCreator
 
             return level;
         }
+
+
+
+
+
 
         public void applyPhysics(float elapsed, LinkedList<Sprite> level)
         {
@@ -728,6 +748,8 @@ namespace guiCreator
             return smallest;
         }
 
+
+
         //=======================================================
         //= Overwritten functions from virtual methods in sprite.
         //=======================================================
@@ -747,8 +769,7 @@ namespace guiCreator
         public override float damageCalculation(float pureAttk)
         {
             // the modifier is BEFORE the critical damage is applied
-            Random mod = new Random();
-            float rand = mod.Next(-attackMod, attackMod);
+            float rand = randNum(-attackMod, attackMod);
             rand /= 10; //we divide it to get a float, what we wanted
             float modDmg = pureAttk * rand;
             pureAttk += modDmg;

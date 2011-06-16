@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
@@ -14,6 +15,13 @@ namespace guiCreator
     {
         // The graphic to use to draw the sprite
         const string ASSETNAME = "Espion/Stand0";
+        // constant used to identify which sounds are associated with who
+        const int VOICENUM = 4;
+
+        SoundMgr sound;
+
+        // Text for Combos
+        Text hudCombos;
 
         // Status bar textures
         Texture2D status_hp;
@@ -59,7 +67,7 @@ namespace guiCreator
             curSpecial = 100,   // current special
             defense = 9;       // damage reduced (%) from basic attacks
         int attackMod = 4;      // The real # (%) is divided by 10 in formula. attackMod is min/max.
-        //int combo = 0;          // combo counter
+        int combo = 0;          // combo counter
 
 
         // Attacking variables for the sprite
@@ -124,14 +132,17 @@ namespace guiCreator
         // Constructor of Espion.
         public Espion(int startX, int startY, int screenPosX, int screenPosY) : base(startX, startY)
         {
+            hudCombos = new Text(10, 160);
             screenPos = new Vector2(screenPosX, screenPosY);
             PlayAnimation("Espion/Stand", 16, true);
+            sound = new SoundMgr();
         }
 
         public override void LoadContent(ContentManager theContentManager)
         {
             velocity = Vector2.Zero;
             base.LoadContent(theContentManager, ASSETNAME);
+            hudCombos.LoadContent(theContentManager, "Font");
             status_hpmp_outline = theContentManager.Load<Texture2D>("UI/status_hpmp_outline");
             status_hp = theContentManager.Load<Texture2D>("UI/status_hp");
             status_sp = theContentManager.Load<Texture2D>("UI/status_sp");
@@ -327,6 +338,8 @@ namespace guiCreator
                 {   // Uncloak, but make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
+                        string name = "uncloak";
+                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/uncloak", 15, false);
                         PlayAnimation("Espion/stand", 16, true);
                         facing_back = false;
@@ -337,6 +350,8 @@ namespace guiCreator
                 {   // Prepare for cloak, make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
+                        string name = "cloak";
+                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/cloak", 15, false);
                         PlayAnimation("Espion/cloakstand", 12, true);
                         cloaked = true;
@@ -378,9 +393,10 @@ namespace guiCreator
             {
                 if (elapsedAttackAnimation >= attackSpeed)
                 {
-                    if (cloaked && facing_back==false)
+                    if (cloaked && facing_back==false) {
+                        //PlayAnimation("Espion/cloakretract", 6, false);
                         PlayAnimation("Espion/cloakstand", 13, true);
-                    else if (cloaked && facing_back==true)
+                    }else if (cloaked && facing_back==true)
                         PlayAnimation("Espion/cloakready", 13, true);
                     else
                         PlayAnimation("Espion/stand", 16, true);
@@ -490,12 +506,21 @@ namespace guiCreator
         }
 
 
+
+
         public void handleAttack(LinkedList<Sprite> level, ContentManager theContentManager)
         {
             elapsedAttackAnimation = 0;
             PlayAnimation("Espion/attack", 7, false);
             createAttackBounds();
             createBounds();
+
+            int snd = 1;    //attacking
+            sound.PlayVoice(theContentManager, VOICENUM, snd);
+
+            snd = 4;
+            string name = "knife_swing";
+            sound.PlayEffect(theContentManager, name, 4);
 
             //Plays slicing effect
             //Depending on the direction, the effect's position is modified...
@@ -526,11 +551,19 @@ namespace guiCreator
                         if (IntersectBounds(attackBounds, n.rightHitBox))
                         {
                             //Connecting hit
+                            
+                            //snd = 2;    //connecting hit
+                            //sound.PlayEffect(theContentManager, snd);
+
+                            Effect HitA;
+                            HitA = new Effect((int)(n.Position.X - (randNum(10, 40))), ((int)n.Position.Y - (randNum(-20, 20))), effectName.HIT_A, sDirection);
+                            HitA.LoadContent(theContentManager);
+                            level.AddLast(HitA);
+
+                            combo++;
+
                             if (n.takeDamage(damageCalculation(attack)))
-                            {
-                                //delete enemy
-                                level.Remove(n);
-                            }
+                                level.Remove(n); //delete enemy
                             break;
                         }
                     }
@@ -539,11 +572,14 @@ namespace guiCreator
                         //facing right
                         if (IntersectBounds(attackBounds, n.sBounds))
                         {
+                            Effect HitA;
+                            HitA = new Effect((int)(n.Position.X - (randNum(10, 40))), ((int)n.Position.Y - (randNum(-20, 20))), effectName.HIT_A, sDirection);
+                            HitA.LoadContent(theContentManager);
+                            level.AddLast(HitA);
+
+                            combo++;
                             if (n.takeDamage(damageCalculation(attack)))
-                            {
-                                //delete enemy
-                                level.Remove(n);
-                            }
+                                level.Remove(n);//delete enemy
                             break;
                         }
                     }
@@ -911,8 +947,7 @@ namespace guiCreator
         public override float damageCalculation(float pureAttk)
         {
             // the modifier is BEFORE the critical damage is applied
-            Random mod = new Random();
-            float rand = mod.Next(-attackMod, attackMod);
+            float rand = randNum(-attackMod, attackMod);
             rand /= 10; //we divide it to get a float, what we wanted
             float modDmg = pureAttk * rand;
             pureAttk += modDmg;
@@ -959,6 +994,12 @@ namespace guiCreator
 
             float width = 40;
             float height = 10;
+
+            if (combo != 0)
+            {
+                string comboCtr = "Combo: " + combo;
+                hudCombos.DrawText(theSpriteBatch, comboCtr);
+            }
 
             // wing behind health bar
              Vector2 wing_status = new Vector2(-10, 20);

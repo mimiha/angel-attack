@@ -309,14 +309,14 @@ namespace guiCreator
             {
                 // Reseting Position
                 PrevPos = new Vector2(0, 0);
-                mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
+                mSprite.LoadContent(this.Content, "LesserDemon/run0");
                 currentGuiObject = guiObject.AverageJoeLeft;
             }
             if (keyState.IsKeyDown(Keys.F) == true)
             {
                 // Reseting Position
                 PrevPos = new Vector2(0, 0);
-                mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
+                mSprite.LoadContent(this.Content, "LesserDemon/run0");
                 currentGuiObject = guiObject.AverageJoeRight;
             }
             if (keyState.IsKeyDown(Keys.Z) == true)

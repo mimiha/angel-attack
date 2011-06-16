@@ -10,11 +10,14 @@ namespace guiCreator
 {
     public class LesserDemon : Sprite
     {
-        const string ASSETNAME = "AverageJoe/aj_run0";
+        const string ASSETNAME = "LesserDemon/run0";
         Vector2 velocity;
         int sDirection;
         Texture2D healthGreen;
         Texture2D healthRed;
+        //Texture2D _DEBUG;   //DEBUG BOUNDING BOXES
+
+
         int elapsedAttack = 0;
         int elapsedAttackAnimation = 60;
         const float ACCELERATION = 0.5f;
@@ -32,7 +35,7 @@ namespace guiCreator
             ATTACK_ANIMATION_LENGTH = 300,      // Max amount of miliseconds an attack is in animation
             ATTACK_DELAY = 500,                 // delay before next attack
             CRITCHANCE = 3,                     // chance of crit (%)
-            DEFENSE = 10;                       // damage reduced (%) from basic attacks
+            DEFENSE = 5;                       // damage reduced (%) from basic attacks
 
 
         // Animation variables
@@ -75,6 +78,7 @@ namespace guiCreator
             : base(startX, startY)
         {
             sDirection = direction;
+
         }
 
         public override void LoadContent(ContentManager theContentManager)
@@ -83,6 +87,7 @@ namespace guiCreator
             base.LoadContent(theContentManager, ASSETNAME);
             healthGreen = theContentManager.Load<Texture2D>("UI/HealthGreen");
             healthRed = theContentManager.Load<Texture2D>("UI/HealthRed");
+            //_DEBUG = theContentManager.Load<Texture2D>("black");
         }
 
         public override LinkedList<Sprite> Update(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
@@ -193,11 +198,11 @@ namespace guiCreator
             {
                 elapsedAttack = 0;
                 elapsedAttackAnimation++;
-                PlayAnimation("AverageJoe/aj_atk", 7, true);
+                PlayAnimation("LesserDemon/attack", 9, true);
             }
             else
             {
-                PlayAnimation("AverageJoe/aj_run", 15, true);
+                PlayAnimation("LesserDemon/run", 14, true);
             }
             return level;
         }
@@ -484,17 +489,19 @@ namespace guiCreator
 
 
 
+
         //=======================================================
         //= Overwritten functions from virtual methods in sprite.
         //=======================================================
 
-        public override bool takeDamage(float damageAmount)
+        public override bool takeDamage(float baseDamage)
         {
             // damageAmount is the damage a player does 
             // AFTER the modifier is applied.
-            float defTemp = DEFENSE / 100;
-            damageAmount *= defTemp;
-            health -= damageAmount;
+            float totalDamage = baseDamage;
+            baseDamage *= DEFENSE / 100;
+            totalDamage -= baseDamage;
+            health -= totalDamage;
             if (health <= 0)
             {
                 return true;
@@ -516,6 +523,14 @@ namespace guiCreator
         }
 
 
+        // Getting direction.
+        // true = left; false = right
+        public override bool getDirection()
+        {
+            if (sDirection == (-1))
+                return true;
+            else return false;
+        }
 
         public override void Draw(SpriteBatch theSpriteBatch)
         {
@@ -532,6 +547,10 @@ namespace guiCreator
             theSpriteBatch.Draw(healthGreen, pos,
                new Rectangle(0, 0, (int)width, (int)height),
                Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
+
+            // _DEBUG
+            //theSpriteBatch.Draw(_DEBUG, drawPosition, rightHitBox,
+            //    Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 0);
 
 
             // drawing the directions

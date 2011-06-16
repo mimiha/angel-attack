@@ -390,7 +390,7 @@ namespace guiCreator
                 n = n.Next;
             }
 
-            if (!baseExists && (DrawComplete == true))
+            if ((!baseExists && (DrawComplete == true)))
             {
                 MessageBox(new IntPtr(0), "Game Over!", "Angel Attack", 0);
                 this.Exit();
