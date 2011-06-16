@@ -338,8 +338,6 @@ namespace guiCreator
                 {   // Uncloak, but make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
-                        string name = "uncloak";
-                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/uncloak", 15, false);
                         PlayAnimation("Espion/stand", 16, true);
                         facing_back = false;
@@ -350,8 +348,6 @@ namespace guiCreator
                 {   // Prepare for cloak, make sure we're standing
                     if (mCurrentState == State.Walking)
                     {
-                        string name = "cloak";
-                        sound.PlayEffect(theContentManager, name);
                         //PlayAnimation("Espion/cloak", 15, false);
                         PlayAnimation("Espion/cloakstand", 12, true);
                         cloaked = true;
@@ -517,10 +513,8 @@ namespace guiCreator
 
             int snd = 1;    //attacking
             sound.PlayVoice(theContentManager, VOICENUM, snd);
-
-            snd = 4;
-            string name = "knife_swing";
-            sound.PlayEffect(theContentManager, name, 4);
+            snd = 2;    //swinging knife
+            sound.PlayEffect(theContentManager, snd);
 
             //Plays slicing effect
             //Depending on the direction, the effect's position is modified...
@@ -551,19 +545,14 @@ namespace guiCreator
                         if (IntersectBounds(attackBounds, n.rightHitBox))
                         {
                             //Connecting hit
-                            
+                            combo++;
                             //snd = 2;    //connecting hit
                             //sound.PlayEffect(theContentManager, snd);
-
-                            Effect HitA;
-                            HitA = new Effect((int)(n.Position.X - (randNum(10, 40))), ((int)n.Position.Y - (randNum(-20, 20))), effectName.HIT_A, sDirection);
-                            HitA.LoadContent(theContentManager);
-                            level.AddLast(HitA);
-
-                            combo++;
-
                             if (n.takeDamage(damageCalculation(attack)))
-                                level.Remove(n); //delete enemy
+                            {
+                                //delete enemy
+                                level.Remove(n);
+                            }
                             break;
                         }
                     }
@@ -572,14 +561,12 @@ namespace guiCreator
                         //facing right
                         if (IntersectBounds(attackBounds, n.sBounds))
                         {
-                            Effect HitA;
-                            HitA = new Effect((int)(n.Position.X - (randNum(10, 40))), ((int)n.Position.Y - (randNum(-20, 20))), effectName.HIT_A, sDirection);
-                            HitA.LoadContent(theContentManager);
-                            level.AddLast(HitA);
-
                             combo++;
                             if (n.takeDamage(damageCalculation(attack)))
-                                level.Remove(n);//delete enemy
+                            {
+                                //delete enemy
+                                level.Remove(n);
+                            }
                             break;
                         }
                     }
@@ -947,7 +934,8 @@ namespace guiCreator
         public override float damageCalculation(float pureAttk)
         {
             // the modifier is BEFORE the critical damage is applied
-            float rand = randNum(-attackMod, attackMod);
+            Random mod = new Random();
+            float rand = mod.Next(-attackMod, attackMod);
             rand /= 10; //we divide it to get a float, what we wanted
             float modDmg = pureAttk * rand;
             pureAttk += modDmg;
