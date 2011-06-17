@@ -9,7 +9,7 @@ namespace guiCreator
 {
     public class SoundMgr
     {
-        SoundEffectInstance sndCtrl;
+        public SoundEffectInstance sndCtrl;
         string directory,   //directory of sound
             name,           //which character is the sound prefixed with?
             type;        //suffix of .wav file
@@ -65,7 +65,7 @@ namespace guiCreator
 
         }   //end voice function
 
-
+        bool IsLooping = false; 
         //Overloaded two functions. This function includes an int
         //in order to enable a random playing of a collection of sounds.
         public void PlayEffect(ContentManager theContentManager, string effect, int numFiles)
@@ -102,7 +102,7 @@ namespace guiCreator
 
                 if (sndCtrl != null)
                 {
-                    if (sndCtrl.State == SoundState.Stopped)
+                    if (sndCtrl.State == SoundState.Stopped && !IsLooping)
                     {
                         sndCtrl.Dispose();
                         sndCtrl = null;
@@ -111,6 +111,12 @@ namespace guiCreator
             }
 
         }   //end effect function
+
+        public bool SETLOOPING
+        {
+            set { IsLooping = value; }
+            get { return IsLooping; }
+        }
 
     }
 }
