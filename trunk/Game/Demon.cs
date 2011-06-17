@@ -153,7 +153,9 @@ namespace guiCreator
             bool enemyInFront = false;
             foreach (Sprite n in collidingObjects)
             {
-                if ((n.GetType().ToString() == typeof(Wall).ToString()) || (n.GetType().ToString() == typeof(Protectee).ToString()))
+                if ((n.GetType().ToString() == typeof(Wall).ToString()) || 
+                    (n.GetType().ToString() == typeof(Protectee).ToString()) ||
+                    (n.GetType().ToString() == typeof(Grenadier).ToString()))
                 {
                     if (IntersectBounds(boundsLeft, n.sBounds) || IntersectBounds(boundsRight, n.sBounds))
                     {
@@ -175,7 +177,9 @@ namespace guiCreator
             {
                 foreach (Sprite n in collidingObjects)
                 {
-                    if ((n.GetType().ToString() == typeof(Wall).ToString()) || (n.GetType().ToString() == typeof(Protectee).ToString()))
+                    if ((n.GetType().ToString() == typeof(Wall).ToString()) || 
+                        (n.GetType().ToString() == typeof(Protectee).ToString()) ||
+                        (n.GetType().ToString() == typeof(Grenadier).ToString()))
                     {
                         if (IntersectBounds(boundsLeft, n.sBounds) || IntersectBounds(boundsBottom, n.sBounds) || IntersectBounds(boundsRight, n.sBounds))
                         {
@@ -357,7 +361,10 @@ namespace guiCreator
         {
             foreach (Sprite n in collidingObjects)
             {
-                if ((n.GetType().ToString() == typeof(Block).ToString()) || (n.GetType().ToString() == typeof(Wall).ToString()) || (n.GetType().ToString() == typeof(Protectee).ToString()))
+                if ((n.GetType().ToString() == typeof(Block).ToString()) || 
+                    (n.GetType().ToString() == typeof(Wall).ToString()) || 
+                    (n.GetType().ToString() == typeof(Protectee).ToString()) ||
+                    (n.GetType().ToString() == typeof(Grenadier).ToString()))
                 {
                     if (IntersectPixels(sBounds, textureData, n.sBounds, n.textureData))
                     {
@@ -387,7 +394,10 @@ namespace guiCreator
         {
             foreach (Sprite n in collidingObjects)
             {
-                if (n.GetType().ToString() == typeof(Wall).ToString() || (n.GetType().ToString() == typeof(Protectee).ToString()))
+                if (n.GetType().ToString() == typeof(Wall).ToString() || 
+                   (n.GetType().ToString() == typeof(Protectee).ToString()) ||
+                   (n.GetType().ToString() == typeof(Grenadier).ToString()) ||
+                   (n.GetType().ToString() == typeof(Espion).ToString()))
                 {
                     if (IntersectBounds(boundsBottom, n.sBounds))
                     {
