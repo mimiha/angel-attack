@@ -1,57 +1,59 @@
 BackGround title is BackGround1
 guiCreator.Block
 Argument Length = 2
-System.Int32 360 400
+System.Int32 320 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 400 400
+System.Int32 360 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 440 400
+System.Int32 400 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 480 400
+System.Int32 440 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 520 400
+System.Int32 480 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 560 360
+System.Int32 520 440
 guiCreator.Block
 Argument Length = 2
-System.Int32 600 360
+System.Int32 560 440
+guiCreator.Block
+Argument Length = 2
+System.Int32 600 440
+guiCreator.Block
+Argument Length = 2
+System.Int32 640 440
+guiCreator.Block
+Argument Length = 2
+System.Int32 640 400
 guiCreator.Block
 Argument Length = 2
 System.Int32 640 360
 guiCreator.Block
 Argument Length = 2
-System.Int32 320 360
+System.Int32 640 320
 guiCreator.Block
 Argument Length = 2
-System.Int32 280 360
+System.Int32 640 280
 guiCreator.Block
 Argument Length = 2
-System.Int32 240 360
-guiCreator.Protectee
+System.Int32 640 240
+guiCreator.Block
 Argument Length = 2
-System.Int32 400 320
+System.Int32 640 200
 guiCreator.Grenadier
 Argument Length = 4
-System.Int32 480 280 512 384
-guiCreator.Spawner
-Argument Length = 7
-System.Int32 640 280 5000
-System.String guiCreator.LesserDemon
-System.Int32 -1
-System.String Spawner
-System.Int32 1
-guiCreator.Spawner
-Argument Length = 7
-System.Int32 240 280 5000
-System.String guiCreator.LesserDemon
-System.Int32 1
-System.String Spawner
-System.Int32 1
-guiCreator.Block
+System.Int32 520 320 512 384
+guiCreator.Protectee
 Argument Length = 2
-System.Int32 400 240
+System.Int32 440 360
+guiCreator.Spawner
+Argument Length = 7
+System.Int32 320 360 5000
+System.String guiCreator.LesserDemon
+System.Int32 1
+System.String Spawner
+System.Int32 1

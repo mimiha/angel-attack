@@ -155,7 +155,8 @@ namespace guiCreator
             {
                 if ((n.GetType().ToString() == typeof(Wall).ToString()) || 
                     (n.GetType().ToString() == typeof(Protectee).ToString()) ||
-                    (n.GetType().ToString() == typeof(Grenadier).ToString()))
+                    (n.GetType().ToString() == typeof(Grenadier).ToString()) ||
+                    (n.GetType().ToString() == typeof(Espion).ToString()))
                 {
                     if (IntersectBounds(boundsLeft, n.sBounds) || IntersectBounds(boundsRight, n.sBounds))
                     {
@@ -179,7 +180,8 @@ namespace guiCreator
                 {
                     if ((n.GetType().ToString() == typeof(Wall).ToString()) || 
                         (n.GetType().ToString() == typeof(Protectee).ToString()) ||
-                        (n.GetType().ToString() == typeof(Grenadier).ToString()))
+                        (n.GetType().ToString() == typeof(Grenadier).ToString()) ||
+                        (n.GetType().ToString() == typeof(Espion).ToString()))
                     {
                         if (IntersectBounds(boundsLeft, n.sBounds) || IntersectBounds(boundsBottom, n.sBounds) || IntersectBounds(boundsRight, n.sBounds))
                         {
@@ -194,6 +196,7 @@ namespace guiCreator
                 }
             }
             else
+
             {
                 elapsedAttack++;
             }
