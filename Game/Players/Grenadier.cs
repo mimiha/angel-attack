@@ -403,8 +403,8 @@ namespace guiCreator
                     {
                         elapsedAttackAnimation = 0;
                         Bullet a;
-                        if ((velocity.X > 0) || (velocity.X < 0))
-                            a = new Bullet((int)Position.X, (int)(Position.Y + 63), sDirection, attack, range, critChance, critMod, attackMod);
+                        if (sDirection > 0)
+                            a = new Bullet((int)Position.X + 50, (int)(Position.Y + 50), sDirection, attack, range, critChance, critMod, attackMod);
                         else
                             a = new Bullet((int)Position.X, (int)(Position.Y + 50), sDirection, attack, range, critChance, critMod, attackMod);
                         a.LoadContent(theContentManager);

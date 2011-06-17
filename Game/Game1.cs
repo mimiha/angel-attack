@@ -41,17 +41,47 @@ namespace guiCreator
 
         LinkedList<Sprite> currentLevel;
 
-        // Effect Linked List
-        //LinkedList<Effect> effectList;
-
         MouseState mouseState = Mouse.GetState();
         KeyboardState currentKeyboardState = Keyboard.GetState();
         KeyboardState oldKeyboardState = Keyboard.GetState();
 
+        Sprite BackGround; 
         // Track non-active & total Spawners
         int DoneSpawner = 0;
-        int TotalSpawner = 0; 
+        int TotalSpawner = 0;
 
+        bool DrawComplete = false;
+        bool SingleLoad = false; 
+
+        // Iterates through the "AllLevel" file to get a levelname
+        int ActiveLevel = 0;
+
+        // Draw() flags
+        bool NoDemonsShown = true; // draws no demons on screen
+        bool NoProtectorShown = true; // draws no protector on screen
+
+        // Text displaying
+        Text PromptDisplay; // Area to display prompts for user
+        Text[] LabelDisplay;// Labels for character choices
+        string PlayerPrompt;// Message to player to do something!
+        string[] LabelNames;// Label Names
+
+        // If level enables player choice in picking character
+        bool PlayerPick = false;
+
+        Sprite[] Characters = new Sprite[2];
+        Vector2 CharacterLocation; 
+
+        // Name of level, used by "LoadContent()"
+        string[] LevelNames; 
+        
+        // Backgrounds need to be loaded through guiEditor. 
+        // Dependant on weather the Content has been loaded or not for background
+        // probably a linkedlist of sprites
+        // Or Cycles through screen creating a level from different background
+        // parts. 
+        // when creating background and using sprite.Draw it will not change 
+        // if the camera is not sometih
         /*
          * The Gamer Services functionality must be initialized before you call this method. 
          * The easiest way to do that is to add a GamerServicesComponent to the Game.Components collection in the constructor of your Game class.
@@ -76,7 +106,17 @@ namespace guiCreator
             
             // TODO: Add your initialization logic here
             currentLevel = new LinkedList<Sprite>();
-            //effectList = new LinkedList<Effect>();
+            BackGround = new Sprite(0, 0);
+
+            // Initializing Sprite draw locations
+            Characters[0] = new Sprite((int)(1024 * .25 - 40), 50);
+            Characters[1] = new Sprite((int)(1024 * .75 - 40), 50);
+
+            // Initializing Text Draw Locations
+            PromptDisplay = new Text(10, 10);
+            LabelDisplay = new Text[2];
+            LabelDisplay[0] = new Text((int)(1024 * .25 - 40), 40);
+            LabelDisplay[1] = new Text((int)(1024 * .75 - 40), 40); 
 
             base.Initialize();
         }
@@ -89,122 +129,177 @@ namespace guiCreator
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+            BackGround.LoadContent(this.Content, "BackGround1"); 
+
             // TODO: use this.Content to load your game content here
-            /*string[] commandArgs = Environment.GetCommandLineArgs();
+            string[] commandArgs = Environment.GetCommandLineArgs();
             if (commandArgs.Length > 1)
-            {*/
-                string fileName = "test";
-                if (File.Exists(fileName))
+            {
+                string fileName = commandArgs[1];
+                if (File.Exists(fileName) && fileName != "AllLevels" )
                 {
-                    /*----------FUNC KEY---------
-                     * STM = Stream
-                     * ARG = Argument
-                     * ARY = Array
-                     * STR = string
-                     * LL  = LinkedList<>
-                     * SPR = Sprite
-                     * REP = Representate/Representation
-                     * DRSPROBJ = Derived Sprite Object
-                     */
+                    // Loads a level================================================
+                    loadGui(fileName); 
+                    //==============================================================
 
-                    // STMs for File & Reading. FileSTM opens the "fileName" file located here
-                    // "angelattack\guiCreator\bin\x86\Debug" And ReadSTM reads from that file.
-                    FileStream FS = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                    StreamReader SR = new StreamReader(FS);
-
-                    string SpriteTypeData = SR.ReadLine();      // Gets the SPROBJ for the ARGs
-
-                    // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
-                    // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
-                    string[] FileLine = SR.ReadLine().Split(new char[] { ' ' });
-                    object[] ArgumentValues;                    // Stores SPROBJ ARG values
-
-                    // Needed for loop control, ARY initialization & ARY iteration 
-                    int ArgumentLength = 0;
-                    int Iterator1 = 0;
-
-                    // "Type"(TY) variables are used to get "data about data" so info on the full name 
-                    // of a C# type or basically the location of where that its' defined can be gotten.
-                    // I don't know specifics but C# can somehow use the information specified in the TY
-                    // declaration to create instances of that type weather it be built-in or created by
-                    // a programmer. I guess it depends on the TY, number & order of ARGs to pick the
-                    // correct constructor for that TY. 
-                    Type ArgumentType;
-
-                    // When loading a file the level object is empty. Since 
-                    // or guiGame only works with LinkedLists(LL) & not strings from files we need the
-                    // appropriate objects to work with & these are it. 
-                    currentLevel = new LinkedList<Sprite>();
-
-                    // ALL RIGHT! Main loop!!! Below is exmaple of what's actually being read from file
-                    // guiCreator.Block
-                    // Argument = 2
-                    // System.Int32 680 320
-                    // Anyway Peek() looks at next char to be read but does not add char to STM. Instead
-                    // it returns a "int" val that REP of the next char to read(refer to ANSCII table)
-                    while (SR.Peek() != -1)
-                    {
-
-                        // Finding how many ARGs the SPR derived object needs from the STR vals in file.
-                        // Then allocating ARY to store them
-                        ArgumentLength = Convert.ToInt32(FileLine[3]);
-                        ArgumentValues = new object[ArgumentLength];
-
-                        // Tells me how many Spawners are in level. 
-                        if (SpriteTypeData == "guiCreator.Spawner")
-                            ++TotalSpawner;
-
-                        // Reads & converts ARGs to proper types for use by derived SPR object(DSPROBJ)
-                        while (Iterator1 < ArgumentLength)
-                        {
-                            // The first line of ARGs. All values of same type. Refer above 4 "Split()"
-                            // FileLine[0] now has a STR REP of a type, which will be used later.
-                            FileLine = SR.ReadLine().Split(new char[] { ' ' });
-                            ArgumentType = Type.GetType(FileLine[0]);
-
-                            // Iterates through each string element in "FileLine"
-                            foreach (string S in FileLine)
-                                if (S != FileLine[0])
-                                {
-                                    // This converts a STR REP of a value to a type IF it's possible.
-                                    // Won't work if attempted on value not of that type. 
-                                    ArgumentValues[Iterator1] = Convert.ChangeType(S, ArgumentType);
-
-                                    ++Iterator1;    // So next value is stored in a different element
-                                }
-                        }
-                        // The Sprite object now exists! ARGs assigned to a DRSPROBJ & drawn to screen.
-                        Sprite SpriteInstance = (Sprite)Activator.CreateInstance
-                                                (Type.GetType(SpriteTypeData), ArgumentValues);
-                        SpriteInstance.LoadContent(this.Content);
-
-                        // The Arguments are the last items read in loop cycle. This fetches the next
-                        // DRSPROBJ if the there is still data to read from file.
-                        if (SR.Peek() != -1)
-                        {
-                            SpriteTypeData = SR.ReadLine();
-                            FileLine = SR.ReadLine().Split(new char[] { ' ' });
-                        }
-
-                        Iterator1 = 0;  // Reset ARG iterator
-
-                        // Stores 1 piece of the level. 
-                        currentLevel.AddLast(SpriteInstance);
-                    }
-                    // Closing up the streams when file is done being read from. 
-                    SR.Close();
-                    FS.Close();
+                    // Stops going through mulitple levels
+                    SingleLoad = true; 
                 }
                 else
                 {
-                    this.Exit();
+                    LoadLevelList();
+                    SingleLoad = false; 
+                    //this.Exit();
                 }
-            /*}
+            }
             else
             {
-                this.Exit();
-            }*/
+                LoadLevelList();
+                //loadGui("test2");
+                SingleLoad = false; 
+                //LevelNames = new string[ActiveLevel];
+                //this.Exit();
+            }
+        }
+
+        // Loads a list of levels
+        public void LoadLevelList()
+        {
+            // Load only when this file exists
+            if (File.Exists("AllLevels"))
+            {
+                // Streams read lines from the "AllLevels" file
+                FileStream FS = new FileStream("AllLevels", FileMode.Open, FileAccess.Read);
+                StreamReader SR = new StreamReader(FS);
+
+                string TextLine; // Keeps 1 line of text from file
+
+                int Iterator = 0; // Iterates through LevelNames
+
+                // Get the count of levels to load & use to initialize array
+                TextLine = SR.ReadLine();
+                LevelNames = new string[Convert.ToInt32(TextLine)];
+
+                // Only do when there is data is to read!
+                while (SR.Peek() != -1)
+                {
+                    // Just Adding names of all levels from "AllLevel" file
+                    TextLine = SR.ReadLine();
+                    LevelNames[Iterator] = TextLine.ToString();
+                    ++Iterator;
+                }
+                // Gotta close my streams
+                SR.Close();
+                FS.Close();
+            }
+        }
+
+        // This loads a level from the list
+        public void loadGui(string fileName)
+        {
+            TotalSpawner = 0; // Initialize to default
+            // Anything with = between it is an example of what val might be. 
+            // ## = Numbers, ?? = Unknown values, TT = TypeName
+            if (File.Exists(fileName))
+            {
+                /*Opens & ena-*/
+                FileStream FS = new FileStream(fileName, FileMode.Open,
+                    /*bles reading*/FileAccess.Read); // to file
+                /*Reader is*/
+                StreamReader SR = new StreamReader(FS); // Connected to this file
+
+                /*STD = */
+                string SpriteTypeData = SR.ReadLine(); /*guiCreator.Block*/
+
+                // Skip the Background title for now
+                if (SpriteTypeData.Contains("BackGround"))
+                    SpriteTypeData = SR.ReadLine(); 
+
+                // If SR.ReadLine() spits out "Cats love catfish" the below Split() is told to 
+                // make FileLine[] = {"Cats", "love", "catfish"}. ReadLine() returns a STR
+                string[] FileLine;
+
+                if (SR.Peek() != -1) /*See if Data exists*/
+                    FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                else
+                    FileLine = new string[5];
+
+                object[] ArgumentValues;                    // Stores SPROBJ ARG values
+
+                // Needed for loop control, ARY initialization & ARY iteration 
+                int ArgumentLength = 0;
+                int Iterator1 = 0;
+
+                /*Stores info*/
+                Type ArgumentType; // needed to convert ARGs vals to their types
+
+                currentLevel = new LinkedList<Sprite>(); // Cleans currentLevel
+
+                // ALL RIGHT! Main loop!!! Below an example of what's read from file
+                // guiCreator.Block
+                // Argument Length = 2
+                // System.Int32 680 320
+                while (SR.Peek() != -1) // Check for text to read from file
+                {
+                    // Then allocating ARY to store them
+                    /*FL[3] = 3 type*/
+                    ArgumentLength = Convert.ToInt32(FileLine[3]); /*info uneeded*/
+                    /*AV array size*/
+                    ArgumentValues = new object[ArgumentLength]; /* is 3 now*/
+
+                    if (SpriteTypeData == "guiCreator.Spawner")
+                        if (ArgumentValues.Length == 6 || 
+                            ArgumentValues.Length == 5 ||
+                           ArgumentValues.Length == 7)
+                            ++TotalSpawner; // Count up sprites
+                        else if(ArgumentValues.Length == 4)
+                            PlayerPick = true; // Sprite is player SpawnPoint
+
+                    /*Read & convert time!!======================================*/
+                    while (Iterator1 < ArgumentLength) //Args to create sprite obj
+                    {
+                        /*System32.Int32 ## ##*/
+                        FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                        /*FL[0]=System32.Int32*/
+                        ArgumentType = Type.GetType(FileLine[0]); /*Make type name*/
+
+                        foreach (string S in FileLine) // Iterate string elements
+                            if (S != FileLine[0]) // No Convert on 1st element
+                            {
+                                /*AV[0] = TT*/
+                                ArgumentValues[Iterator1] = Convert.ChangeType(S, ArgumentType);
+                                /*TT is System.Int32*/
+                                ++Iterator1;
+                            }
+                    }
+                    /*=============================================================*/
+
+                    // The Sprite object now exists! ARGs assigned to a DRSPROBJ & drawn to screen.
+                    Sprite SpriteInstance = (Sprite)Activator.CreateInstance
+                                            (Type.GetType(SpriteTypeData), ArgumentValues);
+                    SpriteInstance.LoadContent(this.Content);
+
+                    if (SR.Peek() != -1) // Check existence of more data ahead
+                    {
+                        /*ARGs done, Sprite*/
+                        SpriteTypeData = SR.ReadLine(); /*typename is next*/
+                        FileLine = SR.ReadLine().Split(new char[] { ' ' });
+                    }
+
+                    Iterator1 = 0;  // Reset ARG iterator
+
+                    // Getting information on where to load sprite & reset flag
+                    if (PlayerPick && SpriteInstance.GetType() == typeof(Spawner) && 
+                        CharacterLocation.X == 0 && CharacterLocation.Y == 0)
+                    {
+                        CharacterLocation = SpriteInstance.drawPosition;
+                    }
+
+                    currentLevel.AddLast(SpriteInstance); // Add sprite data
+                }
+                SR.Close(); // Close Streamreader
+                FS.Close(); // Close FileReader
+            }
         }
 
         /// <summary>
@@ -223,7 +318,27 @@ namespace guiCreator
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (!PlayerPick)
+            {
+                // MainGame Function!===================================================
+                GuiGame(gameTime);
+                //======================================================================
+                base.Update(gameTime); 
+            }
+            else
+            {
+                // Do something here! for player choice!
+                ChooseCharacter();
+            }
+            
+            base.Update(gameTime);
+        }
+
+        // Game players will actually play. 
+        public void GuiGame(GameTime gameTime) 
+        {
             KeyboardState state = Keyboard.GetState();
+
             // Allows the game to exit
             if (state.IsKeyDown(Keys.Escape) == true)
                 this.Exit();
@@ -233,46 +348,129 @@ namespace guiCreator
             bool baseExists = false;
 
             // Any enemies to fight?
-            bool DemonExists = false; 
+            bool DemonExists = false;
 
             while (n != null)
             {
-                if ((n.Value.GetType() == typeof(Protectee)) ||
-                    (n.Value.GetType() == typeof(Spawner)))
+                if (n.Value.GetType() == typeof(Protectee))
                 {
                     baseExists = true;
-
+                }
+                if (n.Value.GetType() == typeof(Spawner))
                     // Add to number of spawners done spawning
                     if (n.Value.DoneSpawning == true)
-                        ++DoneSpawner; 
-                }
-                else
-                if(n.Value.GetType() == typeof (LesserDemon))
+                        ++DoneSpawner;
+                    /*else /*if (n.Value.PlayerSpawned == true)
+                        baseExists = true; */
+
+                if (n.Value.GetType() == typeof(LesserDemon))
                     // Enemies do exist in this update cycle
-                    DemonExists = true; 
+                    DemonExists = true;
 
                 currentLevel = n.Value.Update(gameTime, currentLevel, this.Content);
                 n = n.Next;
-            }
+            } 
 
-            if (!baseExists)
+            Debug.WriteLine("The number done DrawComplete is " + DrawComplete);
+            Debug.WriteLine("The total Spawners are " + TotalSpawner);
+            Debug.WriteLine("AverageJoes existence is " + DemonExists);
+            Debug.WriteLine("The number done spawner is " + DoneSpawner); 
+            Debug.WriteLine("The NoDemonsShown is " + NoDemonsShown.ToString()); 
+
+            if (((!baseExists) || (baseExists)) && (DrawComplete) && (SingleLoad) && 
+                (!DemonExists) && (DoneSpawner == TotalSpawner))
             {
                 MessageBox(new IntPtr(0), "Game Over!", "Angel Attack", 0);
                 this.Exit();
             }
-            
+
             // When all Spawners are done & no more enemies to beat 
             // you've won the level!
-            if ((DoneSpawner == TotalSpawner)&&(DemonExists == false))
+
+            if (((DoneSpawner == TotalSpawner) && (DemonExists == false) &&
+                (DrawComplete == true) && (SingleLoad == false)) ||
+                ((!baseExists) && (!SingleLoad)))
             {
-                MessageBox(new IntPtr(0), "You have destroyed your enemies!",
-                           "Angel Attack", 0);
-                this.Exit();
+                if (ActiveLevel > 0 && baseExists)
+                    MessageBox(new IntPtr(0), "You have destroyed your enemies! ",
+                               "Angel Attack", 0);
+
+                if (!baseExists && currentLevel.Count() > 0)
+                    MessageBox(new IntPtr(0), "You've Lost! ", "Angel Attack", 0);
+                if (ActiveLevel != LevelNames.Count())//Load if more levels exist
+                {
+                    loadGui(LevelNames[ActiveLevel]);
+                    if (PlayerPick)
+                        ChooseCharacter(); 
+                }
+                else
+                {
+                    MessageBox(new IntPtr(0), "Exiting now! ", "Angel Attack", 0);
+                    this.Exit();
+                }
+                ++ActiveLevel;
             }
 
+            DrawComplete = false;
             DoneSpawner = 0;
+        }
 
-            base.Update(gameTime);
+        // Updates current level with the sprite
+        private void updateText()
+        {
+            oldKeyboardState = currentKeyboardState;
+            currentKeyboardState = Keyboard.GetState();
+
+            Keys[] pressedKeys;
+            pressedKeys = currentKeyboardState.GetPressedKeys();
+
+            foreach (Keys key in pressedKeys)
+            {
+                if (oldKeyboardState.IsKeyUp(key))
+                {
+                    if (key == Keys.D0)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D1)
+                    {
+                        // Create Espion instance & add to level
+                        Grenadier NewGrenadier = new Grenadier((int)CharacterLocation.X, 
+                            (int)CharacterLocation.Y, 512, 384);
+                        NewGrenadier.LoadContent(this.Content); 
+                        currentLevel.AddLast(NewGrenadier);
+
+                        PlayerPick = false; // Resets to get on with game 
+                    }
+                    else if (key == Keys.D2)
+                    {
+                        Espion NewEspion = new Espion((int)CharacterLocation.X, 
+                            (int)CharacterLocation.Y, 512, 384);
+                        NewEspion.LoadContent(this.Content); 
+                        currentLevel.AddLast(NewEspion);
+
+                        PlayerPick = false; // Resets to get on with game 
+                    }
+                    else if (key == Keys.D3)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D4)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D5)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D6)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D7)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D8)
+                    { /* Character choice action*/}
+                    else if (key == Keys.D9)
+                    { /* Character choice action*/}
+                    else
+
+                    {
+                        PlayerPrompt = "Your input was wrong try again!";
+                        updateText();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -282,19 +480,62 @@ namespace guiCreator
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-           
+            int DemonCount = 0;  
             //spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             spriteBatch.Begin();
+            if (!PlayerPick)
+            {
+                //BackGround.Draw(this.spriteBatch);
+                foreach (Sprite n in currentLevel)
+                {
+                    n.Draw(this.spriteBatch);
+                    if (n.GetType() == typeof(LesserDemon))
+                        ++DemonCount;
+                }
+            }
+            else
+            {
+                foreach (Sprite n in Characters)
+                {
+                    n.Draw(this.spriteBatch);
+                }
+                PromptDisplay.DrawText(this.spriteBatch, PlayerPrompt);
+                LabelDisplay[0].DrawText(this.spriteBatch, LabelNames[0]);
+                LabelDisplay[1].DrawText(this.spriteBatch, LabelNames[1]); 
+            }
 
-            foreach (Sprite n in currentLevel)
-                n.Draw(this.spriteBatch);
-            //foreach (Sprite n in effectList)
-            //    n.Draw(this.spriteBatch);
             spriteBatch.End();
+            if (DemonCount > 0)
+                NoDemonsShown = false;
+            else
+                NoDemonsShown = true; 
+
+            DrawComplete = true; 
 
             base.Draw(gameTime);
         }
 
+        // Initializes character images & provides choics for player
+        private void ChooseCharacter()
+        {
+            // Initialize Sprites to an image
+            Characters[0].LoadContent(this.Content, "Grenadier/Stand0");
+            Characters[1].LoadContent(this.Content, "Espion/Stand0"); 
+
+            // Create User prompt messages
+            PlayerPrompt = "Choose the number above the character to pick them";
+
+            // Get sprites for text to draw
+            PromptDisplay.LoadContent(this.Content, "Font");
+            LabelDisplay[0].LoadContent(this.Content, "Font");
+            LabelDisplay[1].LoadContent(this.Content, "Font");
+
+            LabelNames = new string[2] { "1", "2" }; // Create Labels
+
+            updateText(); // Updates level with new character!
+
+        }
+        
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern uint MessageBox(IntPtr hWnd, String text, String caption, uint type);
     }
