@@ -73,7 +73,9 @@ namespace guiCreator
         Vector2 CharacterLocation; 
 
         // Name of level, used by "LoadContent()"
-        string[] LevelNames; 
+        string[] LevelNames;
+
+        SoundMgr sound = new SoundMgr(); // Enables sound playing
         
         // Backgrounds need to be loaded through guiEditor. 
         // Dependant on weather the Content has been loaded or not for background
@@ -129,7 +131,9 @@ namespace guiCreator
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            BackGround.LoadContent(this.Content, "BackGround1"); 
+            BackGround.LoadContent(this.Content, "BackGround1");
+
+            sound.PlayEffect(this.Content, "cloak");
 
             // TODO: use this.Content to load your game content here
             string[] commandArgs = Environment.GetCommandLineArgs();
@@ -318,6 +322,10 @@ namespace guiCreator
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if(sound.sndCtrl != null)
+            /*if(sound.sndCtrl.State == SoundState.Stopped)
+                sound.PlayEffect(this.Content, "cloak");*/
+
             if (!PlayerPick)
             {
                 // MainGame Function!===================================================
@@ -480,7 +488,8 @@ namespace guiCreator
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            int DemonCount = 0;  
+            int DemonCount = 0;
+
             //spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
             spriteBatch.Begin();
             if (!PlayerPick)
