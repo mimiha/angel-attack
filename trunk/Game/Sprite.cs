@@ -46,7 +46,7 @@ namespace guiCreator
 
         // The Flag to stop enemies from Spawning!!!
         public bool DoneSpawning = false;  
-        
+        public bool PlayerSpawned = false; 
         //Names of effects
         public enum effectName
         {

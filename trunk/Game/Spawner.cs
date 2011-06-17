@@ -21,13 +21,14 @@ namespace guiCreator
         
         int DemonCount = 0;        // The Number of demons comming from This Spawner!
 
+        public bool DemonSpawner = true; 
         public Spawner(int startX, int startY, int delay, string type, int direction) : base(startX, startY)
         { 
             spawnDelay = delay;
             sType = type;
             sArgs = new object[] { startX, startY, direction };
         }
-
+ 
         // New Constructor initializing number of enemies spawned
         public Spawner(int startX, int startY, int delay, string type, int direction, int DemonNumber)
             : base(startX, startY)
@@ -56,29 +57,53 @@ namespace guiCreator
             base.LoadContent(theContentManager, ASSETNAME);
         }
 
+        // This will Spawn whatever the player picks
+        public Spawner(int startX, int startY, int screenPosX, int screenPosY,
+                       string type, int direction, string ASSETFILE, bool SpawnType)
+            : base(startX, startY)
+        {
+            DemonSpawner = SpawnType;
+            ASSETNAME = ASSETFILE;
+            sType = type; 
+            sArgs = new object[] { startX, startY, 512, 384 };  
+        }
+
+        // Blank Spawner for player
+        public Spawner(int startX, int startY, bool PlayerSpawning, string ASSETFILE)
+            : base(startX, startY)
+        {
+            PlayerSpawned = PlayerSpawning;
+            ASSETNAME = ASSETFILE;
+        }
+
         public override LinkedList<Sprite> Update(GameTime theGameTime, LinkedList<Sprite> level, ContentManager theContentManager)
         {
             for (int i = 0; i < 10; i++)
             {
                  elapsed++;
-                 
-                 // Keeps on Spawning till no more need to be spawned. 
-                 if (DemonCount > 0 && !(DoneSpawning))
-                 {
 
-                     if (elapsed >= spawnDelay)
+                 if (!PlayerSpawned)
+                     // Keeps on Spawning till no more need to be spawned. 
+                     if (DemonCount > 0 && !(DoneSpawning))
                      {
-                         elapsed = 0;
-                         Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(sType), sArgs);
-                         a.LoadContent(theContentManager);
-                         level.AddLast(a);
-                         --DemonCount; // Reduce count
+                         if (elapsed >= spawnDelay)
+                         {
+                             elapsed = 0;
+                             Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(sType), sArgs);
+                             a.LoadContent(theContentManager);
+                             level.AddLast(a);
+                             --DemonCount; // Reduce count
+                         }
                      }
-
-                 }
+                     else
+                     {
+                         DoneSpawning = true;   // We're done spawning now!
+                     }
                  else
                  {
-                     DoneSpawning = true;   // We're done spawning now!
+                     spawnDelay = 5000;
+                     if (elapsed >= spawnDelay)
+                         level.Remove(this);
                  }
 
                  base.Update(theGameTime, level, theContentManager);

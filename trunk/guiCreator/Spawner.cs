@@ -47,6 +47,14 @@ namespace guiCreator
             sArgs = new object[] { startX, startY, direction };
         }
 
+        // Blank Spawner for player
+        public Spawner(int startX, int startY, bool PlayerSpawning, string ASSETFILE)
+            : base(startX, startY)
+        {
+            PlayerSpawned = PlayerSpawning;
+            ASSETNAME = ASSETFILE; 
+        }
+
         public override void LoadContent(ContentManager theContentManager)
         {
             base.LoadContent(theContentManager, ASSETNAME);
@@ -61,7 +69,7 @@ namespace guiCreator
                  // Keeps on Spawning till no more need to be spawned. 
                  if (DemonCount > 0 && !(DoneSpawning))
                  {
-                     if (elapsed >= spawnDelay)
+                     if (elapsed >= spawnDelay && sType != "")
                      {
                          elapsed = 0;
                          Sprite a = (Sprite)Activator.CreateInstance(Type.GetType(sType), sArgs);
@@ -71,7 +79,7 @@ namespace guiCreator
                      --DemonCount;
                  }
                  else
-                     DoneSpawning = true;   // We're done spawning now!
+                     DoneSpawning = false;   // We're done spawning now!
 
                  base.Update(theGameTime, level, theContentManager);
             }

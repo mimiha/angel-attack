@@ -40,6 +40,7 @@ namespace guiCreator
         public const float CRITICAL_DAMAGE = 1.5f;  //the x amount of how much a critical does.
 
         public bool DoneSpawning = false; // Spawn completion flag
+        public bool PlayerSpawned = false; 
 
         //Effects. Needs to be shared by all sprites.
         public enum effectName
