@@ -505,10 +505,8 @@ namespace guiCreator
             createAttackBounds();
             createBounds();
 
-            int snd = 1;    //attacking
-            sound.PlayVoice(theContentManager, VOICENUM, snd);
+            sound.PlayVoice(theContentManager, VOICENUM, 1);
 
-            snd = 4;
             string name = "knife_swing";
             sound.PlayEffect(theContentManager, name, 4);
 
@@ -531,12 +529,9 @@ namespace guiCreator
                         if (IntersectBounds(attackBounds, n.rightHitBox))
                         {
                             //Connecting hit
+                            //sound.PlayEffect(theContentManager, 2);
 
-                            //snd = 2;    //connecting hit
-                            //sound.PlayEffect(theContentManager, snd);
-
-                            int hit = randNum(1, 4);
-                            switch (hit)
+                            switch (randNum(1, 4))
                             {
                                 case 1: addEffect(effectName.HIT_A, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-20, 20))), sDirection, level, theContentManager); break;
                                 case 2: addEffect(effectName.HIT_B, ((int)(n.Position.X - (randNum(5, 20)))), ((int)n.Position.Y - (randNum(-10, 20))), sDirection, level, theContentManager); break;
@@ -556,8 +551,7 @@ namespace guiCreator
                         //facing right
                         if (IntersectBounds(attackBounds, n.sBounds))
                         {
-                            int hit = randNum(1, 4);
-                            switch (hit)
+                            switch (randNum(1, 4))
                             {
                                 case 1: addEffect(effectName.HIT_A, ((int)(n.Position.X - (randNum(10, 40)))), ((int)n.Position.Y - (randNum(-20, 20))), sDirection, level, theContentManager); break;
                                 case 2: addEffect(effectName.HIT_B, ((int)(n.Position.X - (randNum(5, 20)))), ((int)n.Position.Y - (randNum(-10, 20))), sDirection, level, theContentManager); break;

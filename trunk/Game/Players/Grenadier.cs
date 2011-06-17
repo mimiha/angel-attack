@@ -13,6 +13,8 @@ namespace guiCreator
     {
         // The graphic to use to draw the sprite
         const string ASSETNAME = "Grenadier/Stand0";
+        // constant used to identify which sounds are associated with who
+        const int VOICENUM = 3;
 
         // default not reloading
         bool reloading = false;
@@ -206,13 +208,7 @@ namespace guiCreator
                 {   // successfully comboed two arrow keys
 
                     if (dashing == false)
-                    {
-                        Effect dashCloud;
-                        dashCloud = new Effect((int)(Position.X + 30), (int)Position.Y, effectName.DASH, sDirection);
-                        dashCloud.LoadContent(theContentManager);
-                        level.AddLast(dashCloud);
-                    }
-
+                        addEffect(effectName.DASH, ((int)(Position.X) + 30), (int)Position.Y, sDirection, level, theContentManager);
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
                     counting = false;
@@ -228,12 +224,7 @@ namespace guiCreator
                 {   // successfully comboed two arrow keys
 
                     if (dashing == false)
-                    {
-                        Effect dashCloud;
-                        dashCloud = new Effect((int)(Position.X - 80), (int)Position.Y, effectName.DASH, sDirection);
-                        dashCloud.LoadContent(theContentManager);
-                        level.AddLast(dashCloud);
-                    }
+                        addEffect(effectName.DASH, ((int)(Position.X) -80), (int)Position.Y, sDirection, level, theContentManager);
 
                     dashing = true;
                     elapsedDash = DASH_TIMEFRAME;
