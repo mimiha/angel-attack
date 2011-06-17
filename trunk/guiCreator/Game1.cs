@@ -70,8 +70,8 @@ namespace guiCreator
             Wall,
             Grenadier,
             Espion,
-            AverageJoeLeft,
-            AverageJoeRight,
+            LesserDemonLeft,
+            LesserDemonRight,
             SpawnerLeft,
             SpawnerRight,
             Protectee
@@ -291,13 +291,13 @@ namespace guiCreator
                 }
                 if (keyState.IsKeyDown(Keys.D) == true)
                 {
-                    mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
-                    currentGuiObject = guiObject.AverageJoeLeft;
+                    mSprite.LoadContent(this.Content, "LesserDemon/run0");
+                    currentGuiObject = guiObject.LesserDemonLeft;
                 }
                 if (keyState.IsKeyDown(Keys.F) == true)
                 {
-                    mSprite.LoadContent(this.Content, "AverageJoe/aj_run0");
-                    currentGuiObject = guiObject.AverageJoeRight;
+                    mSprite.LoadContent(this.Content, "LesserDemon/run0");
+                    currentGuiObject = guiObject.LesserDemonRight;
                 }
                 if (keyState.IsKeyDown(Keys.Z) == true)
                 {
@@ -398,7 +398,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, 512, 384 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeLeft && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.LesserDemonLeft && (PrevPos != pos))
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, -1);
                         c.LoadContent(this.Content);
@@ -412,7 +412,7 @@ namespace guiCreator
                         object[] d = new object[] { (int)pos.X, (int)pos.Y, (int)-1 };
                         level.args.AddLast(d);
                     }
-                    if (currentGuiObject == guiObject.AverageJoeRight && (PrevPos != pos))
+                    if (currentGuiObject == guiObject.LesserDemonRight && (PrevPos != pos))
                     {
                         LesserDemon c = new LesserDemon((int)pos.X, (int)pos.Y, 1);
                         c.LoadContent(this.Content);
