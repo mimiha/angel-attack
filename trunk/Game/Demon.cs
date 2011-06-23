@@ -17,6 +17,8 @@ namespace guiCreator
         Texture2D healthRed;
         //Texture2D _DEBUG;   //DEBUG BOUNDING BOXES
 
+        SoundMgr sound;
+
 
         int elapsedAttack = 0;
         int elapsedAttackAnimation = 60;
@@ -77,6 +79,7 @@ namespace guiCreator
         public LesserDemon(int startX, int startY, int direction) : base(startX, startY) 
         {
             sDirection = direction;
+            sound = new SoundMgr();
 
         }
 
@@ -186,6 +189,10 @@ namespace guiCreator
                         if (IntersectBounds(boundsLeft, n.sBounds) || IntersectBounds(boundsBottom, n.sBounds) || IntersectBounds(boundsRight, n.sBounds))
                         {
                             elapsedAttackAnimation = 0;
+                            if (n.GetType().ToString() == typeof(Grenadier).ToString())
+                                sound.PlayVoice(theContentManager, 3, 2);
+                            if (n.GetType().ToString() == typeof(Espion).ToString())
+                                sound.PlayVoice(theContentManager, 4, 2);
                             if (n.takeDamage(BASE_ATTACK_DAMAGE))
                             {
                                 level.Remove(n);

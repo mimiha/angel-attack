@@ -1,7 +1,0 @@
-guiCreator.Spawner
-Argument Length = 7
-System.Int32 400 360 5000
-System.String guiCreator.LesserDemon
-System.Int32 -1
-System.String Spawner
-System.Int32 1

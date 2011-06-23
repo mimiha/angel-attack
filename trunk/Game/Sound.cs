@@ -23,7 +23,7 @@ namespace guiCreator
             switch (snd)
             {
                 case 1: type = "_attack"; max = 5; break;
-                case 2: type = "_hurt"; max = 5; break;
+                case 2: type = "_hurt"; max = 7; break;
                 case 3: type = "_death"; max = 4; break;
                 case 4: type = "_special"; max = 4; break;
                 default: type = null; max = -1; break;
@@ -65,7 +65,6 @@ namespace guiCreator
 
         }   //end voice function
 
-        bool IsLooping = false; 
         //Overloaded two functions. This function includes an int
         //in order to enable a random playing of a collection of sounds.
         public void PlayEffect(ContentManager theContentManager, string effect, int numFiles)
@@ -91,6 +90,32 @@ namespace guiCreator
         public void PlayEffect(ContentManager theContentManager, string effectName)
         {
             directory = "audio//effect//";
+
+            if (effectName != null)
+            {
+                name = effectName;
+                SoundEffect soundFX;
+                soundFX = theContentManager.Load<SoundEffect>(directory + name);
+                sndCtrl = soundFX.Play();
+
+
+                if (sndCtrl != null)
+                {
+                    if (sndCtrl.State == SoundState.Stopped && !IsLooping)
+                    {
+                        sndCtrl.Dispose();
+                        sndCtrl = null;
+                    }
+                }
+            }
+
+        }   //end effect function
+
+        bool IsLooping = false; 
+        //Plays BGM
+        public void PlayBGM(ContentManager theContentManager, string effectName)
+        {
+            directory = "audio//bgm//";
 
             if (effectName != null)
             {
