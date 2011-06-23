@@ -1,10 +1,64 @@
 BackGround title is BackGround1
 guiCreator.Block
 Argument Length = 2
-System.Int32 360 400
+System.Int32 120 160
 guiCreator.Block
 Argument Length = 2
-System.Int32 400 400
+System.Int32 120 200
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 240
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 280
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 320
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 360
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 400
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 440
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 480
+guiCreator.Block
+Argument Length = 2
+System.Int32 120 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 160 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 200 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 240 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 280 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 320 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 360 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 400 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 520
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 480
+guiCreator.Block
+Argument Length = 2
+System.Int32 440 440
 guiCreator.Block
 Argument Length = 2
 System.Int32 440 400
@@ -25,108 +79,106 @@ Argument Length = 2
 System.Int32 640 400
 guiCreator.Block
 Argument Length = 2
-System.Int32 680 360
+System.Int32 680 400
 guiCreator.Block
 Argument Length = 2
-System.Int32 720 360
+System.Int32 720 400
+guiCreator.Block
+Argument Length = 2
+System.Int32 760 400
 guiCreator.Block
 Argument Length = 2
 System.Int32 760 360
 guiCreator.Block
 Argument Length = 2
-System.Int32 800 360
+System.Int32 760 320
 guiCreator.Block
 Argument Length = 2
-System.Int32 840 360
+System.Int32 760 280
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 360
+System.Int32 760 240
 guiCreator.Block
 Argument Length = 2
-System.Int32 320 360
+System.Int32 760 200
 guiCreator.Block
 Argument Length = 2
-System.Int32 280 320
+System.Int32 760 160
 guiCreator.Block
 Argument Length = 2
-System.Int32 240 320
+System.Int32 760 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 200 320
+System.Int32 720 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 160 320
+System.Int32 680 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 120 320
+System.Int32 640 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 320
+System.Int32 600 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 320
+System.Int32 560 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 280
+System.Int32 520 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 240
+System.Int32 480 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 200
+System.Int32 440 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 160
+System.Int32 400 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 120
+System.Int32 360 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 880 80
+System.Int32 320 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 280
+System.Int32 280 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 240
+System.Int32 240 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 200
+System.Int32 200 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 160
+System.Int32 160 120
 guiCreator.Block
 Argument Length = 2
-System.Int32 80 120
-guiCreator.Block
+System.Int32 120 120
+guiCreator.Wall
 Argument Length = 2
-System.Int32 80 80
-guiCreator.Block
+System.Int32 520 320
+guiCreator.Wall
 Argument Length = 2
-System.Int32 80 40
+System.Int32 560 320
+guiCreator.Wall
+Argument Length = 2
+System.Int32 320 440
+guiCreator.Wall
+Argument Length = 2
+System.Int32 280 440
 guiCreator.Protectee
 Argument Length = 2
-System.Int32 440 320
+System.Int32 160 440
 guiCreator.Spawner
 Argument Length = 7
-System.Int32 120 240 5000
-System.String guiCreator.LesserDemon
-System.Int32 1
-System.String Spawner
-System.Int32 1
-guiCreator.Spawner
-Argument Length = 7
-System.Int32 840 280 5000
+System.Int32 720 320 5000
 System.String guiCreator.LesserDemon
 System.Int32 -1
 System.String Spawner
-System.Int32 1
-guiCreator.Wall
-Argument Length = 2
-System.Int32 280 240
-guiCreator.Wall
-Argument Length = 2
-System.Int32 680 280
-guiCreator.Espion
+System.Int32 2
+guiCreator.Spawner
 Argument Length = 4
-System.Int32 520 280 512 384
+System.Int32 240 440
+System.Boolean True
+System.String Spawner_Player

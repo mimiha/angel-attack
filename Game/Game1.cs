@@ -133,7 +133,7 @@ namespace guiCreator
             spriteBatch = new SpriteBatch(GraphicsDevice);
             BackGround.LoadContent(this.Content, "BackGround1");
 
-            sound.PlayEffect(this.Content, "cloak");
+            sound.PlayBGM(this.Content, "bgm");
 
             // TODO: use this.Content to load your game content here
             string[] commandArgs = Environment.GetCommandLineArgs();
@@ -323,8 +323,8 @@ namespace guiCreator
         protected override void Update(GameTime gameTime)
         {
             if(sound.sndCtrl != null)
-            /*if(sound.sndCtrl.State == SoundState.Stopped)
-                sound.PlayEffect(this.Content, "cloak");*/
+            if(sound.sndCtrl.State == SoundState.Stopped)
+                sound.PlayBGM(this.Content, "bgm");
 
             if (!PlayerPick)
             {
@@ -413,7 +413,7 @@ namespace guiCreator
                 }
                 else
                 {
-                    MessageBox(new IntPtr(0), "Exiting now! ", "Angel Attack", 0);
+                    MessageBox(new IntPtr(0), "You win!! ", "Angel Attack", 0);
                     this.Exit();
                 }
                 ++ActiveLevel;

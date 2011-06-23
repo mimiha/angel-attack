@@ -374,9 +374,9 @@ namespace guiCreator
                 if (elapsedAttackAnimation >= attackSpeed)
                 {
                     if (cloaked)
-                        PlayAnimation("Espion/run", 15, true);
+                        PlayAnimation("Espion/run", 10, true);
                     else
-                        PlayAnimation("Espion/run", 15, true);
+                        PlayAnimation("Espion/run", 10, true);
                 }
             }
             else
@@ -507,8 +507,8 @@ namespace guiCreator
 
             sound.PlayVoice(theContentManager, VOICENUM, 1);
 
-            string name = "knife_swing";
-            sound.PlayEffect(theContentManager, name, 4);
+
+            sound.PlayEffect(theContentManager, "knife_swing", 4);
 
             //Plays slicing effect
             //Depending on the direction, the effect's position is modified...
